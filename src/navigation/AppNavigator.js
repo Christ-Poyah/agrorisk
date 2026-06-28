@@ -10,6 +10,7 @@ import OTPScreen               from '../screens/OTPScreen';
 import PlantationSummaryScreen from '../screens/PlantationSummaryScreen';
 import AddPlantationScreen     from '../screens/AddPlantationScreen';
 import RiskGuideScreen         from '../screens/RiskGuideScreen';
+import IndemnisationScreen    from '../screens/IndemnisationScreen';
 import ChatbotScreen           from '../screens/ChatbotScreen';
 import PlantationDetailScreen  from '../screens/PlantationDetailScreen';
 import PlantationsScreen       from '../screens/PlantationsScreen';
@@ -30,6 +31,7 @@ function HomeNavigator() {
     <HomeStack.Navigator screenOptions={{ headerShown: false, animation: 'slide_from_right' }}>
       <HomeStack.Screen name="Home"              component={PlantationSummaryScreen} />
       <HomeStack.Screen name="RiskGuide"         component={RiskGuideScreen} />
+      <HomeStack.Screen name="Indemnisation"    component={IndemnisationScreen} />
       <HomeStack.Screen name="AddPlantation"     component={AddPlantationScreen} />
       <HomeStack.Screen name="PlantationDetail"  component={PlantationDetailScreen} />
       <HomeStack.Screen name="Plantations"       component={PlantationsScreen} />

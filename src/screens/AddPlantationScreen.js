@@ -9,15 +9,26 @@ import { useApp } from '../context/AppContext';
 import { CROPS, REGIONS } from '../data/mockData';
 import Icon from '../components/LucideIcon';
 
-const STEPS = ['Culture', 'Localisation', 'Superficie'];
+const STEPS = ['Culture', 'Localisation', 'Superficie', 'Assurance'];
+
+const ASSUREURS = [
+  { id: 'sunu',    label: 'SUNU Assurances',    abbr: 'SU', color: '#0284C7', bg: '#EFF6FF', idLabel: 'Numéro de police' },
+  { id: 'nsia',    label: 'NSIA Assurances',    abbr: 'NS', color: '#16A34A', bg: '#F0FDF4', idLabel: 'Numéro d\'assuré' },
+  { id: 'allianz', label: 'Allianz CI',         abbr: 'AL', color: '#2563EB', bg: '#DBEAFE', idLabel: 'Numéro de contrat' },
+  { id: 'sonar',   label: 'SONAR-CI',           abbr: 'SO', color: '#D97706', bg: '#FFFBEB', idLabel: 'Référence client' },
+  { id: 'sanlam',  label: 'Sanlam CI',          abbr: 'SA', color: '#DC2626', bg: '#FEF2F2', idLabel: 'ID membre' },
+  { id: 'coop',    label: 'Coopérative locale', abbr: 'CO', color: '#7C3AED', bg: '#F5F3FF', idLabel: 'Numéro d\'adhérent' },
+];
 
 export default function AddPlantationScreen({ navigation }) {
-  const { addPlantation } = useApp();
-  const [step, setStep] = useState(0);
+  const { addPlantation, updateUserInsurance } = useApp();
+  const [step, setStep]           = useState(0);
   const [gpsLoading, setGpsLoading] = useState(false);
+  const [dropdownOpen, setDropdownOpen] = useState(false);
   const [form, setForm] = useState({
     name: '', crop: null, cropLabel: '', cropColor: '', cropImage: '',
     region: '', area: '', plantingDate: new Date().toISOString().split('T')[0],
+    assureur: '', clientId: '',
   });
 
   const set = (key, val) => setForm(prev => ({ ...prev, [key]: val }));
@@ -25,7 +36,8 @@ export default function AddPlantationScreen({ navigation }) {
   const canNext =
     (step === 0 && form.crop && form.name.length > 1) ||
     (step === 1 && form.region.length > 0) ||
-    (step === 2 && parseFloat(form.area) > 0);
+    (step === 2 && parseFloat(form.area) > 0) ||
+    (step === 3 && form.assureur.length > 0 && form.clientId.trim().length > 0);
 
   function handleGPS() {
     setGpsLoading(true);
@@ -45,6 +57,7 @@ export default function AddPlantationScreen({ navigation }) {
       region: form.region, area: parseFloat(form.area),
       plantingDate: form.plantingDate,
     });
+    updateUserInsurance(form.assureur);
     navigation.reset({
       index: 0,
       routes: [{ name: 'Main', params: { screen: 'HomeTab', params: { screen: 'Home', params: { plantation } } } }],
@@ -234,6 +247,105 @@ export default function AddPlantationScreen({ navigation }) {
           )}
 
 
+          {/* STEP 3 — Assurance */}
+          {step === 3 && (
+            <>
+              <View style={styles.stepHeader}>
+                <Text style={styles.stepTitle}>Votre assurance</Text>
+                <Text style={styles.stepDesc}>Sélectionnez votre assureur ou coopérative. Ces informations servent à déclencher votre indemnisation en cas de sinistre.</Text>
+              </View>
+
+              <View style={styles.field}>
+                <Text style={styles.label}>Assureur / Coopérative</Text>
+
+                {/* Trigger dropdown */}
+                {(() => {
+                  const selected = ASSUREURS.find(a => a.id === form.assureur);
+                  return (
+                    <TouchableOpacity
+                      style={[styles.dropdownTrigger, dropdownOpen && styles.dropdownTriggerOpen]}
+                      onPress={() => setDropdownOpen(o => !o)}
+                      activeOpacity={0.8}
+                    >
+                      {selected ? (
+                        <View style={[styles.assureurBadge, { backgroundColor: selected.bg }]}>
+                          <Text style={[styles.assureurBadgeText, { color: selected.color }]}>{selected.abbr}</Text>
+                        </View>
+                      ) : (
+                        <Icon name="Shield" size={16} color={COLORS.textMuted} strokeWidth={2} />
+                      )}
+                      <Text style={[styles.dropdownTriggerText, selected && styles.dropdownTriggerSelected]}>
+                        {selected ? selected.label : 'Sélectionner votre assureur'}
+                      </Text>
+                      <Icon name={dropdownOpen ? 'ChevronUp' : 'ChevronDown'} size={16} color={COLORS.textMuted} strokeWidth={2} />
+                    </TouchableOpacity>
+                  );
+                })()}
+
+                {/* Liste déroulante */}
+                {dropdownOpen && (
+                  <View style={styles.dropdownList}>
+                    {ASSUREURS.map((a, i) => {
+                      const active = form.assureur === a.id;
+                      return (
+                        <TouchableOpacity
+                          key={a.id}
+                          style={[
+                            styles.dropdownItem,
+                            i < ASSUREURS.length - 1 && styles.dropdownItemBorder,
+                            active && styles.dropdownItemActive,
+                          ]}
+                          onPress={() => { set('assureur', a.id); set('clientId', ''); setDropdownOpen(false); }}
+                          activeOpacity={0.75}
+                        >
+                          <View style={[styles.assureurBadge, { backgroundColor: a.bg }]}>
+                            <Text style={[styles.assureurBadgeText, { color: a.color }]}>{a.abbr}</Text>
+                          </View>
+                          <Text style={[styles.dropdownItemText, active && styles.dropdownItemTextActive]}>
+                            {a.label}
+                          </Text>
+                          {active && <Icon name="Check" size={15} color={COLORS.brand} strokeWidth={2.5} />}
+                        </TouchableOpacity>
+                      );
+                    })}
+                  </View>
+                )}
+
+                {/* Champ ID client — apparaît après sélection */}
+                {form.assureur && !dropdownOpen && (() => {
+                  const selected = ASSUREURS.find(a => a.id === form.assureur);
+                  return (
+                    <View style={styles.clientIdWrap}>
+                      <Text style={styles.clientIdLabel}>{selected?.idLabel || 'ID client'}</Text>
+                      <View style={[styles.clientIdInput, { borderColor: form.clientId ? selected?.color || COLORS.brand : COLORS.border }]}>
+                        <View style={[styles.assureurBadgeSmall, { backgroundColor: selected?.bg }]}>
+                          <Text style={[styles.assureurBadgeTextSmall, { color: selected?.color }]}>{selected?.abbr}</Text>
+                        </View>
+                        <TextInput
+                          style={styles.clientIdField}
+                          placeholder="Ex: ASS-2024-001234"
+                          placeholderTextColor={COLORS.textMuted}
+                          value={form.clientId}
+                          onChangeText={v => set('clientId', v)}
+                          autoCapitalize="characters"
+                          underlineColorAndroid="transparent"
+                        />
+                      </View>
+                    </View>
+                  );
+                })()}
+              </View>
+
+              <View style={[styles.infoBox, SHADOW.sm]}>
+                <Icon name="Shield" size={16} color={COLORS.brand} strokeWidth={2} />
+                <View style={{ flex: 1, gap: 2 }}>
+                  <Text style={styles.infoTitle}>Smart contract activé automatiquement</Text>
+                  <Text style={styles.infoText}>En cas de sinistre détecté, votre assureur est notifié et l'indemnisation peut être déclenchée en quelques heures.</Text>
+                </View>
+              </View>
+            </>
+          )}
+
           <View style={{ height: 100 }} />
         </ScrollView>
 
@@ -367,6 +479,52 @@ const styles = StyleSheet.create({
   },
   infoTitle: { fontSize: 13, fontFamily: FONTS.semibold, color: COLORS.brand },
   infoText: { fontSize: 12, fontFamily: FONTS.regular, color: COLORS.textSecondary, lineHeight: 17 },
+
+  dropdownTrigger: {
+    flexDirection: 'row', alignItems: 'center', gap: 10,
+    borderWidth: 1, borderColor: COLORS.border,
+    borderRadius: RADIUS.md, paddingHorizontal: 12, paddingVertical: 12,
+    backgroundColor: COLORS.bgPrimary,
+  },
+  dropdownTriggerOpen: { borderColor: COLORS.brand, borderBottomLeftRadius: 0, borderBottomRightRadius: 0 },
+  dropdownTriggerText: { flex: 1, fontSize: 14, fontFamily: FONTS.regular, color: COLORS.textMuted },
+  dropdownTriggerSelected: { color: COLORS.text, fontFamily: FONTS.medium },
+  dropdownList: {
+    borderWidth: 1, borderTopWidth: 0, borderColor: COLORS.brand,
+    borderBottomLeftRadius: RADIUS.md, borderBottomRightRadius: RADIUS.md,
+    backgroundColor: COLORS.bgPrimary, overflow: 'hidden',
+  },
+  dropdownItem: {
+    flexDirection: 'row', alignItems: 'center', gap: 10,
+    paddingHorizontal: 12, paddingVertical: 11,
+  },
+  dropdownItemBorder: { borderBottomWidth: 1, borderBottomColor: COLORS.border },
+  dropdownItemActive: { backgroundColor: COLORS.brandBg },
+  dropdownItemText: { flex: 1, fontSize: 14, fontFamily: FONTS.regular, color: COLORS.textSecondary },
+  dropdownItemTextActive: { color: COLORS.brand, fontFamily: FONTS.semibold },
+
+  assureurBadge: {
+    width: 32, height: 32, borderRadius: RADIUS.sm,
+    alignItems: 'center', justifyContent: 'center', flexShrink: 0,
+  },
+  assureurBadgeText: { fontSize: 11, fontFamily: FONTS.bold },
+  assureurBadgeSmall: {
+    width: 26, height: 26, borderRadius: RADIUS.sm,
+    alignItems: 'center', justifyContent: 'center', flexShrink: 0,
+  },
+  assureurBadgeTextSmall: { fontSize: 10, fontFamily: FONTS.bold },
+
+  clientIdWrap: { gap: 6, marginTop: 4 },
+  clientIdLabel: { fontSize: 12, fontFamily: FONTS.semibold, color: COLORS.textSecondary, textTransform: 'uppercase', letterSpacing: 0.5 },
+  clientIdInput: {
+    flexDirection: 'row', alignItems: 'center', gap: 8,
+    borderWidth: 1.5, borderRadius: RADIUS.md,
+    paddingHorizontal: 10, paddingVertical: 10,
+    backgroundColor: COLORS.bgPrimary,
+  },
+  clientIdField: {
+    flex: 1, fontSize: 14, fontFamily: FONTS.medium, color: COLORS.text, padding: 0,
+  },
   footer: {
     padding: SPACING.md,
     borderTopWidth: 1,

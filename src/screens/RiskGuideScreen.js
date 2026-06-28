@@ -216,6 +216,22 @@ export default function RiskGuideScreen({ route, navigation }) {
           ))}
         </View>
 
+        {/* Bouton accéder à l'indemnisation */}
+        <TouchableOpacity
+          style={[styles.indemnBtn, { backgroundColor: guide.color }]}
+          onPress={() => navigation.navigate('Indemnisation', { type })}
+          activeOpacity={0.85}
+        >
+          <View style={styles.indemnBtnLeft}>
+            <Icon name="Shield" size={20} color="#FFF" strokeWidth={2} />
+          </View>
+          <View style={{ flex: 1 }}>
+            <Text style={styles.indemnBtnTitle}>Accéder à l'indemnisation</Text>
+            <Text style={styles.indemnBtnSub}>Déclencher la procédure smart contract</Text>
+          </View>
+          <Icon name="ChevronRight" size={18} color="rgba(255,255,255,0.8)" strokeWidth={2.5} />
+        </TouchableOpacity>
+
         <View style={{ height: 20 }} />
       </ScrollView>
     </SafeAreaView>
@@ -287,6 +303,18 @@ const styles = StyleSheet.create({
   stepTag: { fontSize: 10, fontFamily: FONTS.semibold, textTransform: 'uppercase', letterSpacing: 0.5 },
   stepTitle: { fontSize: 13, fontFamily: FONTS.semibold, color: COLORS.text },
   stepDesc: { fontSize: 12, fontFamily: FONTS.regular, color: COLORS.textSecondary, lineHeight: 17 },
+
+  indemnBtn: {
+    flexDirection: 'row', alignItems: 'center', gap: 12,
+    borderRadius: RADIUS.lg, padding: SPACING.md,
+  },
+  indemnBtnLeft: {
+    width: 40, height: 40, borderRadius: RADIUS.md,
+    backgroundColor: 'rgba(255,255,255,0.2)',
+    alignItems: 'center', justifyContent: 'center',
+  },
+  indemnBtnTitle: { fontSize: 14, fontFamily: FONTS.bold, color: '#FFF' },
+  indemnBtnSub:   { fontSize: 11, fontFamily: FONTS.regular, color: 'rgba(255,255,255,0.75)', marginTop: 1 },
 
   photoZone: { marginTop: 8 },
   photoBtn: {

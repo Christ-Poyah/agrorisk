@@ -9,7 +9,11 @@ export function AppProvider({ children }) {
   const [alerts, setAlerts]           = useState(INITIAL_ALERTS);
 
   function login(name, region) {
-    setUser({ name, region, joinDate: new Date().toISOString() });
+    setUser({ name, region, assureur: '', moyenPaiement: '', joinDate: new Date().toISOString() });
+  }
+
+  function updateUserInsurance(assureur) {
+    setUser(prev => prev ? { ...prev, assureur } : prev);
   }
 
   function logout() {
@@ -54,7 +58,7 @@ export function AppProvider({ children }) {
 
   return (
     <AppContext.Provider value={{
-      user, login, logout,
+      user, login, logout, updateUserInsurance,
       plantations, addPlantation,
       alerts, markAlertRead, unreadCount,
       stats,

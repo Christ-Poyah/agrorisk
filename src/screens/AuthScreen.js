@@ -19,10 +19,8 @@ export default function AuthScreen({ navigation }) {
   function handleSubmit() {
     const displayName = name.trim() || 'Agriculteur';
     if (mode === 'register') {
-      // Inscription → écran OTP
       navigation.navigate('OTP', { name: displayName, phone: phone || '07 00 00 00 00' });
     } else {
-      // Connexion directe
       login(displayName, 'Yamoussoukro');
       navigation.replace('AddPlantation');
     }
@@ -66,6 +64,7 @@ export default function AuthScreen({ navigation }) {
                     value={name}
                     onChangeText={setName}
                     placeholderTextColor={COLORS.textMuted}
+                    underlineColorAndroid="transparent"
                   />
                 </View>
               </View>
@@ -83,6 +82,7 @@ export default function AuthScreen({ navigation }) {
                   value={phone}
                   onChangeText={setPhone}
                   placeholderTextColor={COLORS.textMuted}
+                  underlineColorAndroid="transparent"
                 />
               </View>
             </View>
