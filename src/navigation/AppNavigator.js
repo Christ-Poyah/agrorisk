@@ -11,6 +11,7 @@ import PlantationSummaryScreen from '../screens/PlantationSummaryScreen';
 import AddPlantationScreen     from '../screens/AddPlantationScreen';
 import RiskGuideScreen         from '../screens/RiskGuideScreen';
 import IndemnisationScreen    from '../screens/IndemnisationScreen';
+import OffresAssuranceScreen  from '../screens/OffresAssuranceScreen';
 import ChatbotScreen           from '../screens/ChatbotScreen';
 import PlantationDetailScreen  from '../screens/PlantationDetailScreen';
 import PlantationsScreen       from '../screens/PlantationsScreen';
@@ -33,6 +34,7 @@ function HomeNavigator() {
       <HomeStack.Screen name="RiskGuide"         component={RiskGuideScreen} />
       <HomeStack.Screen name="Indemnisation"    component={IndemnisationScreen} />
       <HomeStack.Screen name="AddPlantation"     component={AddPlantationScreen} />
+      <HomeStack.Screen name="OffresAssurance"   component={OffresAssuranceScreen} />
       <HomeStack.Screen name="PlantationDetail"  component={PlantationDetailScreen} />
       <HomeStack.Screen name="Plantations"       component={PlantationsScreen} />
       <HomeStack.Screen name="Alerts"            component={AlertsScreen} />
@@ -96,6 +98,7 @@ export default function AppNavigator() {
         <RootStack.Screen name="Auth"              component={AuthScreen} />
         <RootStack.Screen name="OTP"               component={OTPScreen} />
         <RootStack.Screen name="AddPlantation"     component={AddPlantationScreen} />
+        <RootStack.Screen name="OffresAssurance"   component={OffresAssuranceScreen} />
         <RootStack.Screen name="PlantationSummary" component={PlantationSummaryScreen} />
         <RootStack.Screen name="Main"              component={MainTabs} options={{ animation: 'fade' }} />
       </RootStack.Navigator>

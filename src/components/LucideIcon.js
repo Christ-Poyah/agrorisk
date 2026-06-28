@@ -8,7 +8,7 @@ import {
   Satellite, Lock, CreditCard, HelpCircle, Globe, Eye,
   Check, X, ChevronDown, ChevronUp, Layers, Activity,
   Mic, ImagePlus, ArrowUp, Square, Loader,
-  Smartphone, Building2, Wallet, Navigation2,
+  Smartphone, Building2, Wallet, Navigation2, Umbrella,
 } from 'lucide-react-native';
 
 const ICONS = {
@@ -20,7 +20,7 @@ const ICONS = {
   Satellite, Lock, CreditCard, HelpCircle, Globe, Eye,
   Check, X, ChevronDown, ChevronUp, Layers, Activity,
   Mic, ImagePlus, ArrowUp, Square, Loader,
-  Smartphone, Building2, Wallet, Navigation2,
+  Smartphone, Building2, Wallet, Navigation2, Umbrella,
 };
 
 export default function Icon({ name, size = 20, color = '#18181A', strokeWidth = 1.75 }) {

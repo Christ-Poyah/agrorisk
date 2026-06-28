@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   View, Text, StyleSheet, ScrollView, TouchableOpacity,
   TextInput, KeyboardAvoidingView, Platform, Image,
@@ -20,10 +20,10 @@ const ASSUREURS = [
   { id: 'coop',    label: 'Coopérative locale', abbr: 'CO', color: '#7C3AED', bg: '#F5F3FF', idLabel: 'Numéro d\'adhérent',logo: null },
 ];
 
-export default function AddPlantationScreen({ navigation }) {
+export default function AddPlantationScreen({ route, navigation }) {
   const { addPlantation, updateUserInsurance } = useApp();
-  const [step, setStep]           = useState(0);
-  const [gpsLoading, setGpsLoading] = useState(false);
+  const [step, setStep]               = useState(0);
+  const [gpsLoading, setGpsLoading]   = useState(false);
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const [form, setForm] = useState({
     name: '', crop: null, cropLabel: '', cropColor: '', cropImage: '',
@@ -32,6 +32,12 @@ export default function AddPlantationScreen({ navigation }) {
   });
 
   const set = (key, val) => setForm(prev => ({ ...prev, [key]: val }));
+
+  // Retour depuis OffresAssuranceScreen avec un assureur pré-sélectionné
+  useEffect(() => {
+    const sel = route.params?.selectedAssureur;
+    if (sel) { set('assureur', sel); set('clientId', ''); }
+  }, [route.params?.selectedAssureur]);
 
   const canNext =
     (step === 0 && form.crop && form.name.length > 1) ||
@@ -351,6 +357,21 @@ export default function AddPlantationScreen({ navigation }) {
                   <Text style={styles.infoText}>En cas de sinistre détecté, votre assureur est notifié et l'indemnisation peut être déclenchée en quelques heures.</Text>
                 </View>
               </View>
+
+              <TouchableOpacity
+                style={styles.subscribeBtn}
+                onPress={() => navigation.navigate('OffresAssurance')}
+                activeOpacity={0.8}
+              >
+                <View style={styles.subscribeBtnIcon}>
+                  <Icon name="Plus" size={15} color={COLORS.brand} strokeWidth={2.5} />
+                </View>
+                <View style={{ flex: 1 }}>
+                  <Text style={styles.subscribeBtnTitle}>Pas encore assuré ?</Text>
+                  <Text style={styles.subscribeBtnSub}>Découvrir les offres de nos partenaires</Text>
+                </View>
+                <Icon name="ChevronRight" size={15} color={COLORS.brand} strokeWidth={2.5} />
+              </TouchableOpacity>
             </>
           )}
 
@@ -534,6 +555,19 @@ const styles = StyleSheet.create({
   clientIdField: {
     flex: 1, fontSize: 14, fontFamily: FONTS.medium, color: COLORS.text, padding: 0,
   },
+  subscribeBtn: {
+    flexDirection: 'row', alignItems: 'center', gap: 10,
+    borderWidth: 1.5, borderColor: COLORS.brandBorder, borderStyle: 'dashed',
+    borderRadius: RADIUS.md, padding: SPACING.md,
+    backgroundColor: COLORS.brandBg,
+  },
+  subscribeBtnIcon: {
+    width: 32, height: 32, borderRadius: RADIUS.sm,
+    backgroundColor: COLORS.bgPrimary, borderWidth: 1, borderColor: COLORS.brandBorder,
+    alignItems: 'center', justifyContent: 'center',
+  },
+  subscribeBtnTitle: { fontSize: 13, fontFamily: FONTS.semibold, color: COLORS.brand },
+  subscribeBtnSub:   { fontSize: 11, fontFamily: FONTS.regular, color: COLORS.textMuted, marginTop: 1 },
   footer: {
     padding: SPACING.md,
     borderTopWidth: 1,
