@@ -4,8 +4,11 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { COLORS, FONTS, RADIUS, SPACING, SHADOW } from '../theme';
 import Icon from '../components/LucideIcon';
 
-const sunu_logo = require('../assets/images/sunu_assurance.png');
-const nsia_logo = require('../assets/images/nsia_banque.png');
+const sunu_logo    = require('../assets/images/sunu_assurance.png');
+const nsia_logo    = require('../assets/images/nsia_banque.png');
+const allianz_logo = require('../assets/images/allianz.png');
+const sonar_logo   = require('../assets/images/sonar_assurance.png');
+const sanlam_logo  = require('../assets/images/sanlam.png');
 
 const OFFRES = [
   {
@@ -61,7 +64,7 @@ const OFFRES = [
   {
     assureurId: 'allianz',
     assureur: 'Allianz CI',
-    logo: null,
+    logo: allianz_logo,
     color: '#2563EB',
     bg: '#DBEAFE',
     border: '#BFDBFE',
@@ -72,6 +75,42 @@ const OFFRES = [
         price: '4 000',
         coverage: '500 000',
         features: ['Sécheresse & inondation', 'Maladies des cultures', 'Smart contract', 'Wave / MTN / Orange'],
+        badge: null,
+      },
+    ],
+  },
+  {
+    assureurId: 'sonar',
+    assureur: 'SONAR-CI',
+    logo: sonar_logo,
+    color: '#D97706',
+    bg: '#FFFBEB',
+    border: '#FDE68A',
+    abbr: 'SO',
+    plans: [
+      {
+        name: 'AgroRécolte',
+        price: '2 800',
+        coverage: '300 000',
+        features: ['Sécheresse & inondation', 'Indemnisation sous 72h', 'Réseau de 200 agents terrain'],
+        badge: null,
+      },
+    ],
+  },
+  {
+    assureurId: 'sanlam',
+    assureur: 'Sanlam CI',
+    logo: sanlam_logo,
+    color: '#DC2626',
+    bg: '#FEF2F2',
+    border: '#FECACA',
+    abbr: 'SA',
+    plans: [
+      {
+        name: 'AgroProtect',
+        price: '3 500',
+        coverage: '420 000',
+        features: ['Tous risques climatiques', 'Smart contract activé', 'Paiement Wave / MTN / Orange'],
         badge: null,
       },
     ],

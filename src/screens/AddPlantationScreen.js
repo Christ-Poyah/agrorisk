@@ -14,9 +14,9 @@ const STEPS = ['Culture', 'Localisation', 'Superficie', 'Assurance'];
 const ASSUREURS = [
   { id: 'sunu',    label: 'SUNU Assurances',    abbr: 'SU', color: '#0284C7', bg: '#EFF6FF', idLabel: 'Numéro de police',   logo: require('../assets/images/sunu_assurance.png') },
   { id: 'nsia',    label: 'NSIA Assurances',    abbr: 'NS', color: '#16A34A', bg: '#F0FDF4', idLabel: 'Numéro d\'assuré',   logo: require('../assets/images/nsia_banque.png') },
-  { id: 'allianz', label: 'Allianz CI',         abbr: 'AL', color: '#2563EB', bg: '#DBEAFE', idLabel: 'Numéro de contrat', logo: null },
-  { id: 'sonar',   label: 'SONAR-CI',           abbr: 'SO', color: '#D97706', bg: '#FFFBEB', idLabel: 'Référence client',  logo: null },
-  { id: 'sanlam',  label: 'Sanlam CI',          abbr: 'SA', color: '#DC2626', bg: '#FEF2F2', idLabel: 'ID membre',         logo: null },
+  { id: 'allianz', label: 'Allianz CI',         abbr: 'AL', color: '#2563EB', bg: '#DBEAFE', idLabel: 'Numéro de contrat', logo: require('../assets/images/allianz.png') },
+  { id: 'sonar',   label: 'SONAR-CI',           abbr: 'SO', color: '#D97706', bg: '#FFFBEB', idLabel: 'Référence client',  logo: require('../assets/images/sonar_assurance.png') },
+  { id: 'sanlam',  label: 'Sanlam CI',          abbr: 'SA', color: '#DC2626', bg: '#FEF2F2', idLabel: 'ID membre',         logo: require('../assets/images/sanlam.png') },
   { id: 'coop',    label: 'Coopérative locale', abbr: 'CO', color: '#7C3AED', bg: '#F5F3FF', idLabel: 'Numéro d\'adhérent',logo: null },
 ];
 
