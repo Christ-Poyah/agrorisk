@@ -215,18 +215,46 @@ export default function PlantationSummaryScreen({ route, navigation }) {
                       trend={val.trend}
                       delay={i * 150}
                     />
-                    {isAlert && (
-                      <View style={styles.tapHint}>
-                        <Icon name="AlertTriangle" size={11} color="#EA580C" strokeWidth={2} />
-                        <Text style={styles.tapHintText}>Appuyez pour voir le guide d'urgence</Text>
-                        <Icon name="ChevronRight" size={11} color="#EA580C" strokeWidth={2} />
-                      </View>
-                    )}
                   </Animated.View>
                 </TouchableOpacity>
               );
             })}
         </View>
+
+        {/* Boutons d'action alerte */}
+        {alertType && (() => {
+          const isS = alertType === 'secheresse';
+          const clr = isS ? '#EA580C' : '#0284C7';
+          const bg  = isS ? '#FFF7ED' : '#F0F9FF';
+          const bdr = isS ? '#FED7AA' : '#BAE6FD';
+          return (
+            <View style={[styles.alertBtns, { marginHorizontal: SPACING.md }]}>
+              <TouchableOpacity
+                style={[styles.alertActionBtn, { backgroundColor: bg, borderColor: bdr }]}
+                onPress={() => navigation.navigate('RiskGuide', { type: alertType })}
+                activeOpacity={0.8}
+              >
+                <View style={[styles.alertActionIcon, { backgroundColor: clr + '20' }]}>
+                  <Icon name={isS ? 'Sun' : 'Droplets'} size={16} color={clr} strokeWidth={2} />
+                </View>
+                <Text style={[styles.alertActionTxt, { color: clr }]}>Appuyer pour le guide d'urgence</Text>
+                <Icon name="ChevronRight" size={15} color={clr} strokeWidth={2.5} />
+              </TouchableOpacity>
+
+              <TouchableOpacity
+                style={[styles.alertActionBtn, { backgroundColor: COLORS.successBg, borderColor: COLORS.successBorder }]}
+                onPress={() => navigation.navigate('Indemnisation', { type: alertType })}
+                activeOpacity={0.8}
+              >
+                <View style={[styles.alertActionIcon, { backgroundColor: COLORS.success + '20' }]}>
+                  <Icon name="Shield" size={16} color={COLORS.success} strokeWidth={2} />
+                </View>
+                <Text style={[styles.alertActionTxt, { color: COLORS.success }]}>Recevoir votre indemnisation</Text>
+                <Icon name="ChevronRight" size={15} color={COLORS.success} strokeWidth={2.5} />
+              </TouchableOpacity>
+            </View>
+          );
+        })()}
 
         {/* AI Recommendation */}
         <View style={[styles.section, SHADOW.sm, { marginHorizontal: SPACING.md }]}>
@@ -378,12 +406,14 @@ const styles = StyleSheet.create({
   },
   alertTitle: { fontSize: 13, fontFamily: FONTS.semibold },
   alertSub: { fontSize: 11, fontFamily: FONTS.regular, color: COLORS.textMuted, marginTop: 1 },
-  tapHint: {
-    flexDirection: 'row', alignItems: 'center', gap: 4,
-    paddingHorizontal: SPACING.sm, paddingVertical: 5,
-    marginTop: 2, marginBottom: 4,
-    backgroundColor: '#FFF7ED', borderRadius: RADIUS.sm,
-    borderWidth: 1, borderColor: '#FED7AA',
+  alertBtns: { gap: 8 },
+  alertActionBtn: {
+    flexDirection: 'row', alignItems: 'center', gap: 10,
+    borderWidth: 1, borderRadius: RADIUS.md, padding: SPACING.sm,
   },
-  tapHintText: { flex: 1, fontSize: 11, fontFamily: FONTS.medium, color: '#EA580C' },
+  alertActionIcon: {
+    width: 32, height: 32, borderRadius: RADIUS.sm,
+    alignItems: 'center', justifyContent: 'center',
+  },
+  alertActionTxt: { flex: 1, fontSize: 13, fontFamily: FONTS.semibold },
 });

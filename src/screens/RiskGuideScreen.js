@@ -35,12 +35,6 @@ const GUIDES = {
         title: 'Alerter la coopérative',
         desc: 'Signalez la situation à votre coopérative locale. Une assistance collective peut être mobilisée sous 48h.',
       },
-      {
-        title: 'Smart Contract activé',
-        desc: 'Votre assurance détecte automatiquement le sinistre. Une indemnisation de 420 000 FCFA est en cours de traitement.',
-        isLast: true,
-        highlight: true,
-      },
     ],
   },
   inondation: {
@@ -70,12 +64,6 @@ const GUIDES = {
       {
         title: 'Évaluer les plants après retrait',
         desc: 'Une fois l\'eau évacuée, inspectez les plants : nécrose racinaire, verse, décoloration des tiges. Photographiez pour le dossier.',
-      },
-      {
-        title: 'Indemnisation automatique',
-        desc: 'Smart contract déclenché. Indemnisation de 520 000 FCFA en cours — virement mobile money sous 2h.',
-        isLast: true,
-        highlight: true,
       },
     ],
   },

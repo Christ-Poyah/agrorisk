@@ -15,10 +15,17 @@ const AMOUNTS = {
   inondation:  { display: '520 000', raw: 520000 },
 };
 
+const wave_logo         = require('../assets/images/wave.png');
+const mtn_logo          = require('../assets/images/mtn_money.png');
+const orange_logo       = require('../assets/images/orange_money.png');
+const moov_logo         = require('../assets/images/moov_money.png');
+
 const PAYMENT_OPTIONS = [
-  { id: 'wave', label: 'Wave',             color: '#2563EB', bg: '#EFF6FF', border: '#BFDBFE', icon: 'Smartphone' },
-  { id: 'mtn',  label: 'MTN Money',        color: '#D97706', bg: '#FFFBEB', border: '#FDE68A', icon: 'Phone'      },
-  { id: 'bank', label: 'Virement bancaire',color: '#7C3AED', bg: '#F5F3FF', border: '#DDD6FE', icon: 'CreditCard' },
+  { id: 'wave',   label: 'Wave',            color: '#2563EB', bg: '#EFF6FF', border: '#BFDBFE', icon: 'Smartphone', logo: wave_logo   },
+  { id: 'mtn',    label: 'MTN Money',       color: '#D97706', bg: '#FFFBEB', border: '#FDE68A', icon: 'Phone',      logo: mtn_logo    },
+  { id: 'orange', label: 'Orange Money',    color: '#EA580C', bg: '#FFF7ED', border: '#FED7AA', icon: 'Smartphone', logo: orange_logo },
+  { id: 'moov',   label: 'Moov Money',      color: '#0284C7', bg: '#F0F9FF', border: '#BAE6FD', icon: 'Phone',      logo: moov_logo   },
+  { id: 'bank',   label: 'Virement bancaire',color: '#7C3AED', bg: '#F5F3FF', border: '#DDD6FE', icon: 'CreditCard', logo: null       },
 ];
 
 const GUIDE_META = {
@@ -334,7 +341,10 @@ export default function IndemnisationScreen({ route, navigation }) {
                       onPress={() => handleSelectPayment(opt)}
                       activeOpacity={0.8}
                     >
-                      <Icon name={opt.icon} size={20} color={opt.color} strokeWidth={2} />
+                      {opt.logo
+                        ? <Image source={opt.logo} style={styles.payLogo} resizeMode="contain" />
+                        : <Icon name={opt.icon} size={20} color={opt.color} strokeWidth={2} />
+                      }
                       <Text style={[styles.payOptionLabel, { color: opt.color }]}>{opt.label}</Text>
                       {selectedPayment?.id === opt.id && (
                         <Icon name="Check" size={16} color={opt.color} strokeWidth={2.5} />
@@ -390,7 +400,10 @@ export default function IndemnisationScreen({ route, navigation }) {
                   <View style={styles.successReceiptRow}>
                     <Text style={styles.successReceiptKey}>Mode</Text>
                     <View style={styles.successReceiptVal}>
-                      <Icon name={selectedPayment?.icon} size={13} color={selectedPayment?.color} strokeWidth={2} />
+                      {selectedPayment?.logo
+                        ? <Image source={selectedPayment.logo} style={{ width: 18, height: 18 }} resizeMode="contain" />
+                        : <Icon name={selectedPayment?.icon} size={13} color={selectedPayment?.color} strokeWidth={2} />
+                      }
                       <Text style={[styles.successReceiptValTxt, { color: selectedPayment?.color }]}>{selectedPayment?.label}</Text>
                     </View>
                   </View>
@@ -560,6 +573,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row', alignItems: 'center', gap: 10,
     borderWidth: 1, borderRadius: RADIUS.md, padding: SPACING.sm,
   },
+  payLogo: { width: 28, height: 28, flexShrink: 0 },
   payOptionLabel: { fontSize: 14, fontFamily: FONTS.semibold, flex: 1 },
   preferredTag: { paddingHorizontal: 8, paddingVertical: 3, borderRadius: RADIUS.full },
   preferredTxt: { fontSize: 10, fontFamily: FONTS.semibold },

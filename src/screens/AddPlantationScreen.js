@@ -12,12 +12,12 @@ import Icon from '../components/LucideIcon';
 const STEPS = ['Culture', 'Localisation', 'Superficie', 'Assurance'];
 
 const ASSUREURS = [
-  { id: 'sunu',    label: 'SUNU Assurances',    abbr: 'SU', color: '#0284C7', bg: '#EFF6FF', idLabel: 'Numéro de police' },
-  { id: 'nsia',    label: 'NSIA Assurances',    abbr: 'NS', color: '#16A34A', bg: '#F0FDF4', idLabel: 'Numéro d\'assuré' },
-  { id: 'allianz', label: 'Allianz CI',         abbr: 'AL', color: '#2563EB', bg: '#DBEAFE', idLabel: 'Numéro de contrat' },
-  { id: 'sonar',   label: 'SONAR-CI',           abbr: 'SO', color: '#D97706', bg: '#FFFBEB', idLabel: 'Référence client' },
-  { id: 'sanlam',  label: 'Sanlam CI',          abbr: 'SA', color: '#DC2626', bg: '#FEF2F2', idLabel: 'ID membre' },
-  { id: 'coop',    label: 'Coopérative locale', abbr: 'CO', color: '#7C3AED', bg: '#F5F3FF', idLabel: 'Numéro d\'adhérent' },
+  { id: 'sunu',    label: 'SUNU Assurances',    abbr: 'SU', color: '#0284C7', bg: '#EFF6FF', idLabel: 'Numéro de police',   logo: require('../assets/images/sunu_assurance.png') },
+  { id: 'nsia',    label: 'NSIA Assurances',    abbr: 'NS', color: '#16A34A', bg: '#F0FDF4', idLabel: 'Numéro d\'assuré',   logo: require('../assets/images/nsia_banque.png') },
+  { id: 'allianz', label: 'Allianz CI',         abbr: 'AL', color: '#2563EB', bg: '#DBEAFE', idLabel: 'Numéro de contrat', logo: null },
+  { id: 'sonar',   label: 'SONAR-CI',           abbr: 'SO', color: '#D97706', bg: '#FFFBEB', idLabel: 'Référence client',  logo: null },
+  { id: 'sanlam',  label: 'Sanlam CI',          abbr: 'SA', color: '#DC2626', bg: '#FEF2F2', idLabel: 'ID membre',         logo: null },
+  { id: 'coop',    label: 'Coopérative locale', abbr: 'CO', color: '#7C3AED', bg: '#F5F3FF', idLabel: 'Numéro d\'adhérent',logo: null },
 ];
 
 export default function AddPlantationScreen({ navigation }) {
@@ -106,6 +106,7 @@ export default function AddPlantationScreen({ navigation }) {
                     value={form.name}
                     onChangeText={v => set('name', v)}
                     placeholderTextColor={COLORS.textMuted}
+                    underlineColorAndroid="transparent"
                   />
                 </View>
               </View>
@@ -212,6 +213,7 @@ export default function AddPlantationScreen({ navigation }) {
                     value={form.area}
                     onChangeText={v => set('area', v)}
                     placeholderTextColor={COLORS.textMuted}
+                    underlineColorAndroid="transparent"
                   />
                   <Text style={styles.inputUnit}>ha</Text>
                 </View>
@@ -232,6 +234,7 @@ export default function AddPlantationScreen({ navigation }) {
                     value={form.plantingDate}
                     onChangeText={v => set('plantingDate', v)}
                     placeholderTextColor={COLORS.textMuted}
+                    underlineColorAndroid="transparent"
                   />
                 </View>
               </View>
@@ -268,9 +271,11 @@ export default function AddPlantationScreen({ navigation }) {
                       activeOpacity={0.8}
                     >
                       {selected ? (
-                        <View style={[styles.assureurBadge, { backgroundColor: selected.bg }]}>
-                          <Text style={[styles.assureurBadgeText, { color: selected.color }]}>{selected.abbr}</Text>
-                        </View>
+                        selected.logo
+                          ? <Image source={selected.logo} style={styles.assureurLogo} resizeMode="contain" />
+                          : <View style={[styles.assureurBadge, { backgroundColor: selected.bg }]}>
+                              <Text style={[styles.assureurBadgeText, { color: selected.color }]}>{selected.abbr}</Text>
+                            </View>
                       ) : (
                         <Icon name="Shield" size={16} color={COLORS.textMuted} strokeWidth={2} />
                       )}
@@ -298,9 +303,12 @@ export default function AddPlantationScreen({ navigation }) {
                           onPress={() => { set('assureur', a.id); set('clientId', ''); setDropdownOpen(false); }}
                           activeOpacity={0.75}
                         >
-                          <View style={[styles.assureurBadge, { backgroundColor: a.bg }]}>
-                            <Text style={[styles.assureurBadgeText, { color: a.color }]}>{a.abbr}</Text>
-                          </View>
+                          {a.logo
+                            ? <Image source={a.logo} style={styles.assureurLogo} resizeMode="contain" />
+                            : <View style={[styles.assureurBadge, { backgroundColor: a.bg }]}>
+                                <Text style={[styles.assureurBadgeText, { color: a.color }]}>{a.abbr}</Text>
+                              </View>
+                          }
                           <Text style={[styles.dropdownItemText, active && styles.dropdownItemTextActive]}>
                             {a.label}
                           </Text>
@@ -503,6 +511,7 @@ const styles = StyleSheet.create({
   dropdownItemText: { flex: 1, fontSize: 14, fontFamily: FONTS.regular, color: COLORS.textSecondary },
   dropdownItemTextActive: { color: COLORS.brand, fontFamily: FONTS.semibold },
 
+  assureurLogo: { width: 32, height: 32, flexShrink: 0 },
   assureurBadge: {
     width: 32, height: 32, borderRadius: RADIUS.sm,
     alignItems: 'center', justifyContent: 'center', flexShrink: 0,
