@@ -1,7 +1,7 @@
 import React, { useState, useRef, useEffect } from 'react';
 import {
   View, Text, StyleSheet, ScrollView, TouchableOpacity,
-  Animated, Image,
+  Animated, Image, TextInput,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { COLORS, FONTS, RADIUS, SPACING, SHADOW } from '../theme';
@@ -41,7 +41,9 @@ export default function IndemnisationScreen({ route, navigation }) {
   const [photoOk, setPhotoOk]                 = useState(false);
   const [contractOk, setContractOk]           = useState(false);
   const [selectedPayment, setSelectedPayment] = useState(null);
+  const [paymentNumber, setPaymentNumber]     = useState('');
   const [paymentSent, setPaymentSent]         = useState(false);
+  const [paying, setPaying]                   = useState(false);
 
   const progressAnim = useRef(new Animated.Value(0)).current;
 
@@ -71,10 +73,28 @@ export default function IndemnisationScreen({ route, navigation }) {
     }, 2000);
   }
 
-  function handlePayment(opt) {
+  function handleSelectPayment(opt) {
     setSelectedPayment(opt);
-    setTimeout(() => setPaymentSent(true), 900);
+    setPaymentNumber('');
   }
+
+  function confirmPayment() {
+    setPaying(true);
+    setTimeout(() => {
+      setPaying(false);
+      setPaymentSent(true);
+    }, 1800);
+  }
+
+  const numberLabel = selectedPayment?.id === 'bank'
+    ? 'Votre IBAN / RIB'
+    : `Votre numéro ${selectedPayment?.label || ''}`;
+
+  const numberPlaceholder = selectedPayment?.id === 'bank'
+    ? 'CI XX XXXX XXXX XXXX XXXX XXX'
+    : '+225 07 XX XX XX XX';
+
+  const canConfirm = paymentNumber.trim().length >= 8;
 
 
   return (
@@ -311,14 +331,49 @@ export default function IndemnisationScreen({ route, navigation }) {
                         { backgroundColor: opt.bg, borderColor: opt.border },
                         selectedPayment?.id === opt.id && { borderColor: opt.color, borderWidth: 2 },
                       ]}
-                      onPress={() => handlePayment(opt)}
+                      onPress={() => handleSelectPayment(opt)}
                       activeOpacity={0.8}
                     >
                       <Icon name={opt.icon} size={20} color={opt.color} strokeWidth={2} />
                       <Text style={[styles.payOptionLabel, { color: opt.color }]}>{opt.label}</Text>
+                      {selectedPayment?.id === opt.id && (
+                        <Icon name="Check" size={16} color={opt.color} strokeWidth={2.5} />
+                      )}
                     </TouchableOpacity>
                   ))}
                 </View>
+
+                {/* Saisie du numéro — apparaît après sélection */}
+                {selectedPayment && (
+                  <View style={[styles.numberWrap, { borderColor: selectedPayment.color + '60' }]}>
+                    <Text style={[styles.numberLabel, { color: selectedPayment.color }]}>
+                      {numberLabel}
+                    </Text>
+                    <View style={[styles.numberInput, { borderColor: paymentNumber ? selectedPayment.color : COLORS.border }]}>
+                      <Icon name={selectedPayment.icon} size={16} color={selectedPayment.color} strokeWidth={2} />
+                      <TextInput
+                        style={styles.numberField}
+                        placeholder={numberPlaceholder}
+                        placeholderTextColor={COLORS.textMuted}
+                        value={paymentNumber}
+                        onChangeText={setPaymentNumber}
+                        keyboardType={selectedPayment.id === 'bank' ? 'default' : 'phone-pad'}
+                        underlineColorAndroid="transparent"
+                      />
+                    </View>
+                    <TouchableOpacity
+                      style={[styles.confirmBtn, { backgroundColor: selectedPayment.color }, !canConfirm && styles.confirmBtnDisabled, paying && { opacity: 0.7 }]}
+                      onPress={confirmPayment}
+                      disabled={!canConfirm || paying}
+                      activeOpacity={0.85}
+                    >
+                      <Icon name={paying ? 'Loader' : 'Zap'} size={16} color="#FFF" strokeWidth={2} />
+                      <Text style={styles.confirmBtnTxt}>
+                        {paying ? 'Envoi en cours...' : `Recevoir ${amount.display} FCFA`}
+                      </Text>
+                    </TouchableOpacity>
+                  </View>
+                )}
               </>
             )}
 
@@ -326,12 +381,38 @@ export default function IndemnisationScreen({ route, navigation }) {
             {paymentSent && (
               <View style={styles.successBox}>
                 <View style={styles.successIconWrap}>
-                  <Icon name="CheckCircle2" size={42} color={COLORS.success} strokeWidth={1.5} />
+                  <Icon name="CheckCircle2" size={44} color={COLORS.success} strokeWidth={1.5} />
                 </View>
-                <Text style={styles.successTitle}>Paiement en cours !</Text>
+                <Text style={styles.successTitle}>Indemnisation envoyée !</Text>
                 <Text style={styles.successAmount}>{amount.display} FCFA</Text>
+
+                <View style={[styles.successReceipt, { borderColor: selectedPayment?.color + '40' || COLORS.border }]}>
+                  <View style={styles.successReceiptRow}>
+                    <Text style={styles.successReceiptKey}>Mode</Text>
+                    <View style={styles.successReceiptVal}>
+                      <Icon name={selectedPayment?.icon} size={13} color={selectedPayment?.color} strokeWidth={2} />
+                      <Text style={[styles.successReceiptValTxt, { color: selectedPayment?.color }]}>{selectedPayment?.label}</Text>
+                    </View>
+                  </View>
+                  <View style={styles.successReceiptRow}>
+                    <Text style={styles.successReceiptKey}>Numéro</Text>
+                    <Text style={styles.successReceiptValTxt}>{paymentNumber}</Text>
+                  </View>
+                  <View style={styles.successReceiptRow}>
+                    <Text style={styles.successReceiptKey}>Délai</Text>
+                    <Text style={styles.successReceiptValTxt}>Sous 2 heures</Text>
+                  </View>
+                  <View style={[styles.successReceiptRow, { borderBottomWidth: 0 }]}>
+                    <Text style={styles.successReceiptKey}>Réf.</Text>
+                    <Text style={[styles.successReceiptValTxt, { fontFamily: FONTS.regular, fontSize: 11, color: COLORS.textMuted }]}>
+                      #IND-{Date.now().toString().slice(-8)}
+                    </Text>
+                  </View>
+                </View>
+
                 <Text style={styles.successSub}>
-                  Votre indemnisation sera créditée via{'\n'}{selectedPayment?.label} dans les 2 heures.
+                  Votre assureur {user?.assureur || ''} a été notifié.{'\n'}
+                  Un SMS de confirmation vous sera envoyé.
                 </Text>
               </View>
             )}
@@ -483,7 +564,29 @@ const styles = StyleSheet.create({
   preferredTag: { paddingHorizontal: 8, paddingVertical: 3, borderRadius: RADIUS.full },
   preferredTxt: { fontSize: 10, fontFamily: FONTS.semibold },
 
-  successBox: { alignItems: 'center', gap: SPACING.sm, paddingVertical: SPACING.md },
+  numberWrap: {
+    borderWidth: 1, borderRadius: RADIUS.md,
+    padding: SPACING.sm, gap: SPACING.sm,
+    backgroundColor: COLORS.bgSecondary,
+  },
+  numberLabel: { fontSize: 12, fontFamily: FONTS.semibold },
+  numberInput: {
+    flexDirection: 'row', alignItems: 'center', gap: 8,
+    borderWidth: 1.5, borderRadius: RADIUS.md,
+    paddingHorizontal: 12, paddingVertical: 11,
+    backgroundColor: COLORS.bgPrimary,
+  },
+  numberField: {
+    flex: 1, fontSize: 14, fontFamily: FONTS.medium, color: COLORS.text, padding: 0,
+  },
+  confirmBtn: {
+    flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 8,
+    borderRadius: RADIUS.md, paddingVertical: 13,
+  },
+  confirmBtnDisabled: { opacity: 0.35 },
+  confirmBtnTxt: { fontSize: 14, fontFamily: FONTS.bold, color: '#FFF' },
+
+  successBox: { alignItems: 'center', gap: SPACING.sm, paddingVertical: SPACING.sm },
   successIconWrap: {
     width: 80, height: 80, borderRadius: 40,
     backgroundColor: COLORS.successBg,
@@ -492,7 +595,20 @@ const styles = StyleSheet.create({
   successTitle:  { fontSize: 18, fontFamily: FONTS.bold,    color: COLORS.text },
   successAmount: { fontSize: 30, fontFamily: FONTS.bold,    color: COLORS.success },
   successSub: {
-    fontSize: 13, fontFamily: FONTS.regular, color: COLORS.textMuted,
-    textAlign: 'center', lineHeight: 20,
+    fontSize: 12, fontFamily: FONTS.regular, color: COLORS.textMuted,
+    textAlign: 'center', lineHeight: 18,
   },
+
+  successReceipt: {
+    width: '100%', borderWidth: 1, borderRadius: RADIUS.md,
+    backgroundColor: COLORS.bgSecondary, overflow: 'hidden',
+  },
+  successReceiptRow: {
+    flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center',
+    paddingHorizontal: 14, paddingVertical: 10,
+    borderBottomWidth: 1, borderBottomColor: COLORS.border,
+  },
+  successReceiptKey: { fontSize: 12, fontFamily: FONTS.regular, color: COLORS.textMuted },
+  successReceiptVal: { flexDirection: 'row', alignItems: 'center', gap: 4 },
+  successReceiptValTxt: { fontSize: 13, fontFamily: FONTS.semibold, color: COLORS.text },
 });
