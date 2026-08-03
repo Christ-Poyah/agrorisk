@@ -1,7 +1,7 @@
 import React, { useState, useRef, useEffect } from 'react';
 import {
-  View, Text, StyleSheet, TextInput, TouchableOpacity,
-  Animated, KeyboardAvoidingView, Platform,
+  View, Text, StyleSheet, TouchableOpacity,
+  Animated, KeyboardAvoidingView, Platform, TextInput,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { COLORS, FONTS, RADIUS, SPACING, SHADOW } from '../theme';

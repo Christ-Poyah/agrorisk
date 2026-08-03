@@ -4,10 +4,10 @@ import { COLORS, FONTS, RADIUS, SPACING, SHADOW } from '../theme';
 import Icon from './LucideIcon';
 
 const SEV = {
-  critique: { color: '#7C3AED', bg: '#F5F3FF', border: '#DDD6FE', icon: 'AlertTriangle' },
-  eleve:    { color: '#DC2626', bg: '#FEF2F2', border: '#FECACA', icon: 'AlertTriangle' },
-  modere:   { color: '#D97706', bg: '#FFFBEB', border: '#FDE68A', icon: 'AlertTriangle' },
-  info:     { color: '#2563EB', bg: '#EFF6FF', border: '#BFDBFE', icon: 'Info' },
+  critique: { color: '#7F1D1D', bg: '#FFF0F0', border: '#F9C4C4', icon: 'AlertTriangle' },
+  eleve:    { color: '#B91C1C', bg: '#FEF2F2', border: '#FBCFCC', icon: 'AlertTriangle' },
+  modere:   { color: '#B45309', bg: '#FEF8EB', border: '#F5D49A', icon: 'AlertTriangle' },
+  info:     { color: '#0369A1', bg: '#EFF7FF', border: '#BAD8F0', icon: 'Info' },
 };
 
 const TYPE_ICONS = {
@@ -48,9 +48,9 @@ export default function AlertItem({ alert, onPress }) {
           <Text style={styles.regionText}>{alert.region}</Text>
         </View>
         {alert.smartContractTriggered && (
-          <View style={[styles.chip, { backgroundColor: COLORS.purpleBg, borderColor: COLORS.purpleBorder }]}>
-            <Icon name="Zap" size={11} color={COLORS.purple} />
-            <Text style={[styles.chipText, { color: COLORS.purple }]}>Smart Contract déclenché</Text>
+          <View style={[styles.chip, { backgroundColor: COLORS.criticalBg, borderColor: COLORS.criticalBorder }]}>
+            <Icon name="Zap" size={11} color={COLORS.critical} />
+            <Text style={[styles.chipText, { color: COLORS.critical }]}>Smart Contract déclenché</Text>
           </View>
         )}
         {alert.actionRequired && !alert.smartContractTriggered && (

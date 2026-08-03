@@ -13,7 +13,7 @@ export default function SplashScreen({ navigation }) {
       Animated.timing(fade,  { toValue: 1, duration: 600, useNativeDriver: true }),
       Animated.spring(scale, { toValue: 1, tension: 60, friction: 8, useNativeDriver: true }),
     ]).start();
-    const t = setTimeout(() => navigation.replace('Auth'), 2200);
+    const t = setTimeout(() => navigation.replace('Onboarding'), 2200);
     return () => clearTimeout(t);
   }, []);
 

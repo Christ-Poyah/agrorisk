@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import {
   View, Text, StyleSheet, ScrollView, TouchableOpacity,
-  TextInput, KeyboardAvoidingView, Platform, Image,
+  KeyboardAvoidingView, Platform, Image, TextInput,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { COLORS, FONTS, RADIUS, SPACING, SHADOW } from '../theme';
@@ -245,13 +245,6 @@ export default function AddPlantationScreen({ route, navigation }) {
                 </View>
               </View>
 
-              <View style={[styles.infoBox, SHADOW.sm]}>
-                <Icon name="Satellite" size={16} color={COLORS.brand} strokeWidth={2} />
-                <View style={{ flex: 1, gap: 2 }}>
-                  <Text style={styles.infoTitle}>Surveillance activée dès l'enregistrement</Text>
-                  <Text style={styles.infoText}>Analyse satellite toutes les 6h · Alertes en temps réel · Prédictions IA quotidiennes</Text>
-                </View>
-              </View>
             </>
           )}
 
@@ -332,8 +325,8 @@ export default function AddPlantationScreen({ route, navigation }) {
                     <View style={styles.clientIdWrap}>
                       <Text style={styles.clientIdLabel}>{selected?.idLabel || 'ID client'}</Text>
                       <View style={[styles.clientIdInput, { borderColor: form.clientId ? selected?.color || COLORS.brand : COLORS.border }]}>
-                        <View style={[styles.assureurBadgeSmall, { backgroundColor: selected?.bg }]}>
-                          <Text style={[styles.assureurBadgeTextSmall, { color: selected?.color }]}>{selected?.abbr}</Text>
+                        <View style={styles.clientIdIconWrap}>
+                          <Icon name="User" size={15} color={COLORS.brand} strokeWidth={2} />
                         </View>
                         <TextInput
                           style={styles.clientIdField}
@@ -350,13 +343,6 @@ export default function AddPlantationScreen({ route, navigation }) {
                 })()}
               </View>
 
-              <View style={[styles.infoBox, SHADOW.sm]}>
-                <Icon name="Shield" size={16} color={COLORS.brand} strokeWidth={2} />
-                <View style={{ flex: 1, gap: 2 }}>
-                  <Text style={styles.infoTitle}>Smart contract activé automatiquement</Text>
-                  <Text style={styles.infoText}>En cas de sinistre détecté, votre assureur est notifié et l'indemnisation peut être déclenchée en quelques heures.</Text>
-                </View>
-              </View>
 
               <TouchableOpacity
                 style={styles.subscribeBtn}
@@ -554,6 +540,11 @@ const styles = StyleSheet.create({
   },
   clientIdField: {
     flex: 1, fontSize: 14, fontFamily: FONTS.medium, color: COLORS.text, padding: 0,
+  },
+  clientIdIconWrap: {
+    width: 28, height: 28, borderRadius: RADIUS.full,
+    backgroundColor: COLORS.brandBg, borderWidth: 1, borderColor: COLORS.brandBorder,
+    alignItems: 'center', justifyContent: 'center',
   },
   subscribeBtn: {
     flexDirection: 'row', alignItems: 'center', gap: 10,

@@ -15,9 +15,6 @@ const OFFRES = [
     assureurId: 'sunu',
     assureur: 'SUNU Assurances',
     logo: sunu_logo,
-    color: '#0284C7',
-    bg: '#EFF6FF',
-    border: '#BFDBFE',
     abbr: 'SU',
     plans: [
       {
@@ -40,9 +37,6 @@ const OFFRES = [
     assureurId: 'nsia',
     assureur: 'NSIA Assurances',
     logo: nsia_logo,
-    color: '#16A34A',
-    bg: '#F0FDF4',
-    border: '#BBF7D0',
     abbr: 'NS',
     plans: [
       {
@@ -65,9 +59,6 @@ const OFFRES = [
     assureurId: 'allianz',
     assureur: 'Allianz CI',
     logo: allianz_logo,
-    color: '#2563EB',
-    bg: '#DBEAFE',
-    border: '#BFDBFE',
     abbr: 'AL',
     plans: [
       {
@@ -83,9 +74,6 @@ const OFFRES = [
     assureurId: 'sonar',
     assureur: 'SONAR-CI',
     logo: sonar_logo,
-    color: '#D97706',
-    bg: '#FFFBEB',
-    border: '#FDE68A',
     abbr: 'SO',
     plans: [
       {
@@ -101,9 +89,6 @@ const OFFRES = [
     assureurId: 'sanlam',
     assureur: 'Sanlam CI',
     logo: sanlam_logo,
-    color: '#DC2626',
-    bg: '#FEF2F2',
-    border: '#FECACA',
     abbr: 'SA',
     plans: [
       {
@@ -119,9 +104,6 @@ const OFFRES = [
     assureurId: 'coop',
     assureur: 'Coopérative locale',
     logo: null,
-    color: '#7C3AED',
-    bg: '#F5F3FF',
-    border: '#DDD6FE',
     abbr: 'CO',
     plans: [
       {
@@ -168,25 +150,25 @@ export default function OffresAssuranceScreen({ navigation }) {
         {OFFRES.map(offre => (
           <View key={offre.assureurId} style={styles.assureurBlock}>
             {/* En-tête assureur */}
-            <View style={[styles.assureurHeader, { backgroundColor: offre.bg, borderColor: offre.border }]}>
+            <View style={styles.assureurHeader}>
               {offre.logo
                 ? <Image source={offre.logo} style={styles.assureurLogo} resizeMode="contain" />
-                : <View style={[styles.assureurBadge, { backgroundColor: offre.color + '20' }]}>
-                    <Text style={[styles.assureurBadgeText, { color: offre.color }]}>{offre.abbr}</Text>
+                : <View style={styles.assureurBadge}>
+                    <Text style={styles.assureurBadgeText}>{offre.abbr}</Text>
                   </View>
               }
-              <Text style={[styles.assureurName, { color: offre.color }]}>{offre.assureur}</Text>
-              <View style={[styles.partnerBadge, { backgroundColor: offre.color + '15', borderColor: offre.border }]}>
-                <Text style={[styles.partnerBadgeText, { color: offre.color }]}>Partenaire</Text>
+              <Text style={styles.assureurName}>{offre.assureur}</Text>
+              <View style={styles.partnerBadge}>
+                <Text style={styles.partnerBadgeText}>Partenaire</Text>
               </View>
             </View>
 
             {/* Plans */}
             {offre.plans.map((plan, pi) => (
-              <View key={pi} style={[styles.planCard, SHADOW.sm, plan.badge === 'Recommandé' && { borderColor: offre.color, borderWidth: 1.5 }]}>
+              <View key={pi} style={[styles.planCard, SHADOW.sm, plan.badge === 'Recommandé' && styles.planCardHighlight]}>
                 {/* Badge */}
                 {plan.badge && (
-                  <View style={[styles.planBadge, { backgroundColor: offre.color }]}>
+                  <View style={styles.planBadge}>
                     <Text style={styles.planBadgeText}>{plan.badge}</Text>
                   </View>
                 )}
@@ -194,15 +176,15 @@ export default function OffresAssuranceScreen({ navigation }) {
                 <View style={styles.planTop}>
                   <Text style={styles.planName}>{plan.name}</Text>
                   <View style={styles.planPriceWrap}>
-                    <Text style={[styles.planPrice, { color: offre.color }]}>{plan.price} FCFA</Text>
+                    <Text style={styles.planPrice}>{plan.price} FCFA</Text>
                     <Text style={styles.planPricePer}>/mois</Text>
                   </View>
                 </View>
 
                 {/* Couverture */}
-                <View style={[styles.coverageRow, { backgroundColor: offre.bg, borderColor: offre.border }]}>
-                  <Icon name="Umbrella" size={13} color={offre.color} strokeWidth={2} />
-                  <Text style={[styles.coverageText, { color: offre.color }]}>
+                <View style={styles.coverageRow}>
+                  <Icon name="Umbrella" size={13} color={COLORS.brand} strokeWidth={2} />
+                  <Text style={styles.coverageText}>
                     Couverture jusqu'à <Text style={{ fontFamily: FONTS.bold }}>{plan.coverage} FCFA</Text>
                   </Text>
                 </View>
@@ -211,7 +193,7 @@ export default function OffresAssuranceScreen({ navigation }) {
                 <View style={styles.featuresList}>
                   {plan.features.map((f, fi) => (
                     <View key={fi} style={styles.featureRow}>
-                      <Icon name="Check" size={13} color={COLORS.success} strokeWidth={2.5} />
+                      <Icon name="Check" size={13} color={COLORS.brand} strokeWidth={2.5} />
                       <Text style={styles.featureText}>{f}</Text>
                     </View>
                   ))}
@@ -219,7 +201,7 @@ export default function OffresAssuranceScreen({ navigation }) {
 
                 {/* CTA */}
                 <TouchableOpacity
-                  style={[styles.planBtn, { backgroundColor: offre.color }]}
+                  style={styles.planBtn}
                   onPress={() => handleSelect(offre.assureurId)}
                   activeOpacity={0.85}
                 >
@@ -267,21 +249,24 @@ const styles = StyleSheet.create({
 
   assureurHeader: {
     flexDirection: 'row', alignItems: 'center', gap: 10,
-    borderWidth: 1, borderRadius: RADIUS.md,
+    borderWidth: 1, borderColor: COLORS.border, borderRadius: RADIUS.md,
     paddingHorizontal: SPACING.md, paddingVertical: 10,
+    backgroundColor: COLORS.bgPrimary,
   },
   assureurLogo: { width: 36, height: 36 },
   assureurBadge: {
     width: 36, height: 36, borderRadius: RADIUS.sm,
+    backgroundColor: COLORS.brandBg, borderWidth: 1, borderColor: COLORS.brandBorder,
     alignItems: 'center', justifyContent: 'center',
   },
-  assureurBadgeText: { fontSize: 12, fontFamily: FONTS.bold },
-  assureurName: { flex: 1, fontSize: 14, fontFamily: FONTS.semibold },
+  assureurBadgeText: { fontSize: 12, fontFamily: FONTS.bold, color: COLORS.brand },
+  assureurName: { flex: 1, fontSize: 14, fontFamily: FONTS.semibold, color: COLORS.text },
   partnerBadge: {
     borderWidth: 1, borderRadius: RADIUS.full,
     paddingHorizontal: 8, paddingVertical: 3,
+    backgroundColor: COLORS.brandBg, borderColor: COLORS.brandBorder,
   },
-  partnerBadgeText: { fontSize: 10, fontFamily: FONTS.semibold },
+  partnerBadgeText: { fontSize: 10, fontFamily: FONTS.semibold, color: COLORS.brand },
 
   planCard: {
     backgroundColor: COLORS.bgPrimary, borderRadius: RADIUS.lg,
@@ -289,25 +274,30 @@ const styles = StyleSheet.create({
     padding: SPACING.md, gap: SPACING.sm, overflow: 'hidden',
     marginLeft: 12,
   },
+  planCardHighlight: {
+    borderColor: COLORS.brandBorder, borderWidth: 1.5,
+  },
   planBadge: {
     position: 'absolute', top: 0, right: 0,
     paddingHorizontal: 10, paddingVertical: 4,
     borderBottomLeftRadius: RADIUS.md,
+    backgroundColor: COLORS.brand,
   },
   planBadgeText: { fontSize: 10, fontFamily: FONTS.bold, color: '#FFF' },
 
   planTop: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', marginTop: 4 },
   planName: { fontSize: 15, fontFamily: FONTS.bold, color: COLORS.text },
   planPriceWrap: { flexDirection: 'row', alignItems: 'baseline', gap: 2 },
-  planPrice: { fontSize: 18, fontFamily: FONTS.bold },
+  planPrice: { fontSize: 18, fontFamily: FONTS.bold, color: COLORS.brand },
   planPricePer: { fontSize: 11, fontFamily: FONTS.regular, color: COLORS.textMuted },
 
   coverageRow: {
     flexDirection: 'row', alignItems: 'center', gap: 6,
     borderWidth: 1, borderRadius: RADIUS.sm,
     paddingHorizontal: 10, paddingVertical: 6,
+    backgroundColor: COLORS.brandBg, borderColor: COLORS.brandBorder,
   },
-  coverageText: { fontSize: 12, fontFamily: FONTS.medium },
+  coverageText: { fontSize: 12, fontFamily: FONTS.medium, color: COLORS.brand },
 
   featuresList: { gap: 6 },
   featureRow: { flexDirection: 'row', alignItems: 'center', gap: 7 },
@@ -316,6 +306,7 @@ const styles = StyleSheet.create({
   planBtn: {
     flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 7,
     borderRadius: RADIUS.md, paddingVertical: 12, marginTop: 4,
+    backgroundColor: COLORS.brand,
   },
   planBtnText: { fontSize: 14, fontFamily: FONTS.semibold, color: '#FFF', flex: 1, textAlign: 'center' },
 });

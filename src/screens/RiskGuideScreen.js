@@ -4,74 +4,85 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { COLORS, FONTS, RADIUS, SPACING, SHADOW } from '../theme';
 import Icon from '../components/LucideIcon';
 
-const mais_malade = require('../assets/images/mais_malade.png');
+const mais_malade    = require('../assets/images/mais_malade.png');
+const secheress_02   = require('../assets/images/secheress_02.png');
+const secheress_03   = require('../assets/images/secheress_03.png');
 
 const GUIDES = {
   secheresse: {
-    title: 'Alerte Sécheresse',
-    subtitle: 'Risque critique détecté — agissez maintenant',
-    color: '#EA580C',
-    bg: '#FFF7ED',
-    border: '#FED7AA',
-    icon: 'Sun',
+    color: '#B45309',
+    bg: '#FEF8EB',
+    border: '#F5D49A',
     steps: [
       {
         title: 'Suspendre les traitements',
         desc: 'Arrêtez toute fertilisation immédiatement. Les engrais accélèrent le stress hydrique et aggravent les dégâts.',
+        requirePhoto: false,
       },
       {
-        title: 'Irrigation d\'urgence',
-        desc: 'Installez un système goutte-à-goutte ciblé au pied des plants. Arrosez tôt le matin (5h–7h) pour limiter l\'évaporation.',
+        title: "Irrigation d'urgence",
+        desc: "Installez un système goutte-à-goutte ciblé au pied des plants. Arrosez tôt le matin (5h–7h) pour limiter l'évaporation.",
+        requirePhoto: true,
+        photoImage: secheress_02,
       },
       {
         title: 'Appliquer du paillage',
-        desc: 'Couvrez le sol d\'une couche de paillis organique de 8–10 cm autour des pieds pour retenir l\'humidité.',
+        desc: "Couvrez le sol d'une couche de paillis organique de 8–10 cm autour des pieds pour retenir l'humidité.",
+        requirePhoto: true,
+        photoImage: secheress_03,
       },
       {
         title: 'Tailler les feuilles sèches',
         desc: 'Retirez les feuilles jaunies ou desséchées. Cela réduit la transpiration et concentre l\'eau vers les organes vitaux.',
+        requirePhoto: true,
       },
       {
         title: 'Alerter la coopérative',
         desc: 'Signalez la situation à votre coopérative locale. Une assistance collective peut être mobilisée sous 48h.',
+        requirePhoto: false,
       },
     ],
   },
   inondation: {
-    title: 'Alerte Inondation',
-    subtitle: 'Risque critique détecté — agissez maintenant',
-    color: '#0284C7',
-    bg: '#F0F9FF',
-    border: '#BAE6FD',
-    icon: 'Droplets',
+    color: '#0369A1',
+    bg: '#EFF7FF',
+    border: '#BAD8F0',
     steps: [
       {
         title: 'Creuser des canaux de drainage',
-        desc: 'Ouvrez des rigoles autour du périmètre du champ pour évacuer l\'eau vers les zones basses. Profondeur minimale : 30 cm.',
+        desc: "Ouvrez des rigoles autour du périmètre du champ pour évacuer l'eau vers les zones basses. Profondeur minimale : 30 cm.",
+        requirePhoto: true,
       },
       {
-        title: 'Éliminer l\'eau stagnante',
-        desc: 'Agissez dans les 24h. Au-delà de 48h, l\'asphyxie racinaire devient irréversible pour le maïs.',
+        title: "Éliminer l'eau stagnante",
+        desc: "Agissez dans les 24h. Au-delà de 48h, l'asphyxie racinaire devient irréversible pour le maïs.",
+        requirePhoto: true,
       },
       {
         title: 'Traitement fongicide préventif',
-        desc: 'Appliquez un fongicide à base de cuivre pour prévenir la fonte des semis et les maladies liées à l\'excès d\'humidité.',
+        desc: "Appliquez un fongicide à base de cuivre pour prévenir la fonte des semis et les maladies liées à l'excès d'humidité.",
+        requirePhoto: false,
       },
       {
         title: 'Aucune intervention mécanique',
-        desc: 'Ne faites pas circuler d\'engins dans le champ tant que le sol est saturé — le tassement aggraverait les dégâts.',
+        desc: "Ne faites pas circuler d'engins dans le champ tant que le sol est saturé — le tassement aggraverait les dégâts.",
+        requirePhoto: false,
       },
       {
         title: 'Évaluer les plants après retrait',
-        desc: 'Une fois l\'eau évacuée, inspectez les plants : nécrose racinaire, verse, décoloration des tiges. Photographiez pour le dossier.',
+        desc: 'Une fois l\'eau évacuée, inspectez les plants : nécrose racinaire, verse, décoloration des tiges.',
+        requirePhoto: true,
       },
     ],
   },
 };
 
 function StepItem({ step, index, total, color, delay }) {
-  const fadeAnim   = useRef(new Animated.Value(0)).current;
-  const slideAnim  = useRef(new Animated.Value(20)).current;
+  const fadeAnim  = useRef(new Animated.Value(0)).current;
+  const slideAnim = useRef(new Animated.Value(20)).current;
+  const scanAnim  = useRef(new Animated.Value(0)).current;
+  const scanLoop  = useRef(null);
+
   const [validated, setValidated] = useState(false);
   const [analyzing, setAnalyzing] = useState(false);
 
@@ -82,81 +93,105 @@ function StepItem({ step, index, total, color, delay }) {
     ]).start();
   }, []);
 
-  const isLast = index === total - 1;
+  const isLast   = index === total - 1;
+  const photoSrc = step.photoImage ?? mais_malade;
+
+  const scanY = scanAnim.interpolate({ inputRange: [0, 1], outputRange: [0, 72] });
 
   function handlePhoto() {
     setAnalyzing(true);
+    scanLoop.current = Animated.loop(
+      Animated.sequence([
+        Animated.timing(scanAnim, { toValue: 1, duration: 800, useNativeDriver: true }),
+        Animated.timing(scanAnim, { toValue: 0, duration: 0,   useNativeDriver: true }),
+      ])
+    );
+    scanLoop.current.start();
     setTimeout(() => {
+      if (scanLoop.current) scanLoop.current.stop();
       setAnalyzing(false);
       setValidated(true);
     }, 1800);
   }
 
+  function handleDone() {
+    setValidated(true);
+  }
+
   return (
     <Animated.View style={[styles.stepRow, { opacity: fadeAnim, transform: [{ translateY: slideAnim }] }]}>
-      {/* Colonne gauche : numéro + ligne */}
+      {/* Colonne gauche */}
       <View style={styles.stepLeft}>
         <View style={[
           styles.circle,
           { borderColor: validated ? COLORS.success : color },
-          { backgroundColor: validated ? COLORS.success : (step.highlight ? color : COLORS.bgPrimary) },
+          { backgroundColor: validated ? COLORS.success : COLORS.bgPrimary },
         ]}>
           {validated
             ? <Icon name="Check" size={14} color="#FFF" strokeWidth={3} />
-            : <Text style={[styles.circleNum, { color: step.highlight ? '#FFF' : color }]}>{index + 1}</Text>
+            : <Text style={[styles.circleNum, { color }]}>{index + 1}</Text>
           }
         </View>
         {!isLast && <View style={[styles.line, { backgroundColor: validated ? COLORS.success + '60' : color + '40' }]} />}
       </View>
 
-      {/* Colonne droite : contenu */}
+      {/* Colonne droite */}
       <View style={[
         styles.stepContent,
-        step.highlight && { backgroundColor: step.bg || COLORS.brandBg, borderColor: color + '40' },
         validated && { borderColor: COLORS.successBorder, backgroundColor: COLORS.successBg },
       ]}>
-        {step.highlight && (
-          <View style={styles.stepIconRow}>
-            <Icon name="Zap" size={13} color={color} strokeWidth={2} />
-            <Text style={[styles.stepTag, { color }]}>Automatique</Text>
-          </View>
-        )}
-        <Text style={[styles.stepTitle, step.highlight && { color }, validated && { color: COLORS.success }]}>
-          {step.title}
-        </Text>
+        <Text style={[styles.stepTitle, validated && { color: COLORS.success }]}>{step.title}</Text>
         <Text style={styles.stepDesc}>{step.desc}</Text>
 
-        {/* Champ photo fictif — pas sur la dernière étape automatique */}
-        {!step.highlight && (
-          <View style={styles.photoZone}>
-            {validated ? (
-              <View style={styles.photoValidated}>
-                <Image source={mais_malade} style={styles.photoThumb} resizeMode="cover" />
-                <View style={styles.photoValidBadge}>
-                  <Icon name="CheckCircle2" size={12} color={COLORS.success} strokeWidth={2.5} />
-                  <Text style={styles.photoValidText}>Agro AI a validé cette étape</Text>
+        <View style={styles.actionZone}>
+          {validated ? (
+            <View style={styles.validatedBadge}>
+              <Icon name="CheckCircle2" size={12} color={COLORS.success} strokeWidth={2.5} />
+              <Text style={styles.validatedText}>
+                {step.requirePhoto ? 'Agro AI a validé cette étape' : 'Étape complétée'}
+              </Text>
+            </View>
+          ) : step.requirePhoto ? (
+            <>
+              {/* Photo + scan IA */}
+              {analyzing && (
+                <View style={styles.photoContainer}>
+                  <Image source={photoSrc} style={styles.photoThumb} resizeMode="cover" />
+                  <Animated.View style={[styles.scanLine, { transform: [{ translateY: scanY }] }]} />
+                  <View style={styles.iaBadge}>
+                    <Icon name="Bot" size={9} color="#5CB83C" strokeWidth={2} />
+                    <Text style={styles.iaBadgeText}>IA</Text>
+                  </View>
                 </View>
-              </View>
-            ) : (
-              <TouchableOpacity
-                style={[styles.photoBtn, analyzing && { opacity: 0.6 }]}
-                onPress={handlePhoto}
-                disabled={analyzing}
-                activeOpacity={0.75}
-              >
-                <Icon
-                  name={analyzing ? 'Loader' : 'ImagePlus'}
-                  size={15}
-                  color={color}
-                  strokeWidth={2}
-                />
-                <Text style={[styles.photoBtnText, { color }]}>
-                  {analyzing ? 'Agro AI analyse...' : 'Prendre une photo pour valider'}
-                </Text>
-              </TouchableOpacity>
-            )}
-          </View>
-        )}
+              )}
+
+              {analyzing ? (
+                <View style={styles.analyzingRow}>
+                  <Icon name="Loader" size={13} color={color} strokeWidth={2} />
+                  <Text style={[styles.analyzingText, { color }]}>Agro AI analyse votre champ…</Text>
+                </View>
+              ) : (
+                <TouchableOpacity
+                  style={[styles.photoBtn, { borderColor: color + '60' }]}
+                  onPress={handlePhoto}
+                  activeOpacity={0.75}
+                >
+                  <Icon name="ImagePlus" size={15} color={color} strokeWidth={2} />
+                  <Text style={[styles.photoBtnText, { color }]}>Prendre une photo pour valider</Text>
+                </TouchableOpacity>
+              )}
+            </>
+          ) : (
+            <TouchableOpacity
+              style={styles.doneBtn}
+              onPress={handleDone}
+              activeOpacity={0.75}
+            >
+              <Icon name="Check" size={14} color={COLORS.brand} strokeWidth={2.5} />
+              <Text style={styles.doneBtnText}>Marquer comme fait</Text>
+            </TouchableOpacity>
+          )}
+        </View>
       </View>
     </Animated.View>
   );
@@ -165,37 +200,24 @@ function StepItem({ step, index, total, color, delay }) {
 export default function RiskGuideScreen({ route, navigation }) {
   const { type } = route.params;
   const guide = GUIDES[type];
+  const typeLabel = type === 'secheresse' ? 'Sécheresse' : 'Inondation';
 
   return (
     <SafeAreaView style={styles.safe} edges={['top']}>
-      {/* Header */}
       <View style={styles.header}>
         <TouchableOpacity style={styles.backBtn} onPress={() => navigation.goBack()}>
           <Icon name="ArrowLeft" size={20} color={COLORS.text} strokeWidth={2} />
         </TouchableOpacity>
-        <Text style={styles.headerTitle}>Guide d'urgence</Text>
+        <Text style={styles.headerTitle}>Guide d'urgence : {typeLabel}</Text>
         <View style={styles.backBtn} />
       </View>
 
       <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={styles.container}>
-
-        {/* Alert banner */}
-        <View style={[styles.alertBanner, { backgroundColor: guide.bg, borderColor: guide.border }]}>
-          <View style={[styles.alertIcon, { backgroundColor: guide.color + '20' }]}>
-            <Icon name={guide.icon} size={22} color={guide.color} strokeWidth={2} />
-          </View>
-          <View style={{ flex: 1 }}>
-            <Text style={[styles.alertTitle, { color: guide.color }]}>{guide.title}</Text>
-            <Text style={styles.alertSub}>{guide.subtitle}</Text>
-          </View>
-        </View>
-
-        {/* Steps */}
         <View style={styles.steps}>
           {guide.steps.map((step, i) => (
             <StepItem
               key={i}
-              step={{ ...step, bg: guide.bg }}
+              step={step}
               index={i}
               total={guide.steps.length}
               color={guide.color}
@@ -203,23 +225,6 @@ export default function RiskGuideScreen({ route, navigation }) {
             />
           ))}
         </View>
-
-        {/* Bouton accéder à l'indemnisation */}
-        <TouchableOpacity
-          style={[styles.indemnBtn, { backgroundColor: guide.color }]}
-          onPress={() => navigation.navigate('Indemnisation', { type })}
-          activeOpacity={0.85}
-        >
-          <View style={styles.indemnBtnLeft}>
-            <Icon name="Shield" size={20} color="#FFF" strokeWidth={2} />
-          </View>
-          <View style={{ flex: 1 }}>
-            <Text style={styles.indemnBtnTitle}>Accéder à l'indemnisation</Text>
-            <Text style={styles.indemnBtnSub}>Déclencher la procédure smart contract</Text>
-          </View>
-          <Icon name="ChevronRight" size={18} color="rgba(255,255,255,0.8)" strokeWidth={2.5} />
-        </TouchableOpacity>
-
         <View style={{ height: 20 }} />
       </ScrollView>
     </SafeAreaView>
@@ -239,29 +244,11 @@ const styles = StyleSheet.create({
 
   container: { padding: SPACING.md, gap: SPACING.md },
 
-  alertBanner: {
-    flexDirection: 'row', alignItems: 'center', gap: 12,
-    borderWidth: 1, borderRadius: RADIUS.lg, padding: SPACING.md,
-  },
-  alertIcon: {
-    width: 48, height: 48, borderRadius: RADIUS.md,
-    alignItems: 'center', justifyContent: 'center',
-  },
-  alertTitle: { fontSize: 16, fontFamily: FONTS.bold },
-  alertSub: { fontSize: 12, fontFamily: FONTS.regular, color: COLORS.textMuted, marginTop: 2 },
-
   steps: { gap: 0 },
 
-  stepRow: {
-    flexDirection: 'row',
-    gap: 16,
-    minHeight: 80,
-  },
+  stepRow: { flexDirection: 'row', gap: 16, minHeight: 80 },
 
-  stepLeft: {
-    width: 36,
-    alignItems: 'center',
-  },
+  stepLeft: { width: 36, alignItems: 'center' },
   circle: {
     width: 36, height: 36, borderRadius: 18,
     alignItems: 'center', justifyContent: 'center',
@@ -269,11 +256,7 @@ const styles = StyleSheet.create({
   },
   circleNum: { fontSize: 14, fontFamily: FONTS.bold },
   line: {
-    flex: 1,
-    width: 2,
-    marginVertical: 4,
-    borderRadius: 1,
-    minHeight: 24,
+    flex: 1, width: 2, marginVertical: 4, borderRadius: 1, minHeight: 24,
   },
 
   stepContent: {
@@ -286,41 +269,61 @@ const styles = StyleSheet.create({
     borderColor: COLORS.border,
     gap: 3,
   },
-  stepContentHighlight: { borderWidth: 1 },
-  stepIconRow: { flexDirection: 'row', alignItems: 'center', gap: 4, marginBottom: 2 },
-  stepTag: { fontSize: 10, fontFamily: FONTS.semibold, textTransform: 'uppercase', letterSpacing: 0.5 },
   stepTitle: { fontSize: 13, fontFamily: FONTS.semibold, color: COLORS.text },
   stepDesc: { fontSize: 12, fontFamily: FONTS.regular, color: COLORS.textSecondary, lineHeight: 17 },
 
-  indemnBtn: {
-    flexDirection: 'row', alignItems: 'center', gap: 12,
-    borderRadius: RADIUS.lg, padding: SPACING.md,
-  },
-  indemnBtnLeft: {
-    width: 40, height: 40, borderRadius: RADIUS.md,
-    backgroundColor: 'rgba(255,255,255,0.2)',
-    alignItems: 'center', justifyContent: 'center',
-  },
-  indemnBtnTitle: { fontSize: 14, fontFamily: FONTS.bold, color: '#FFF' },
-  indemnBtnSub:   { fontSize: 11, fontFamily: FONTS.regular, color: 'rgba(255,255,255,0.75)', marginTop: 1 },
+  actionZone: { marginTop: 8 },
 
-  photoZone: { marginTop: 8 },
+  photoContainer: {
+    position: 'relative',
+    overflow: 'hidden',
+    borderRadius: RADIUS.md,
+    marginBottom: 8,
+    borderWidth: 1.5,
+    borderColor: '#5CB83C',
+  },
+  photoThumb: { width: '100%', height: 140 },
+  scanLine: {
+    position: 'absolute',
+    left: 0, right: 0, height: 14,
+    backgroundColor: 'rgba(92,184,60,0.38)',
+  },
+  iaBadge: {
+    position: 'absolute', top: 6, right: 6,
+    flexDirection: 'row', alignItems: 'center', gap: 3,
+    backgroundColor: 'rgba(0,0,0,0.65)',
+    borderRadius: RADIUS.full,
+    paddingHorizontal: 7, paddingVertical: 3,
+  },
+  iaBadgeText: { fontSize: 9, fontFamily: FONTS.bold, color: '#5CB83C', letterSpacing: 1 },
+
+  analyzingRow: {
+    flexDirection: 'row', alignItems: 'center', gap: 6,
+    paddingVertical: 6,
+  },
+  analyzingText: { fontSize: 12, fontFamily: FONTS.medium },
+
   photoBtn: {
     flexDirection: 'row', alignItems: 'center', gap: 7,
     borderWidth: 1, borderStyle: 'dashed', borderRadius: RADIUS.md,
     paddingVertical: 8, paddingHorizontal: 10,
-    borderColor: COLORS.border, backgroundColor: COLORS.bgSecondary,
+    backgroundColor: COLORS.bgSecondary,
   },
   photoBtnText: { fontSize: 12, fontFamily: FONTS.medium },
-  photoValidated: { gap: 6 },
-  photoThumb: {
-    width: '100%', height: 80, borderRadius: RADIUS.md, overflow: 'hidden',
+
+  doneBtn: {
+    flexDirection: 'row', alignItems: 'center', gap: 7,
+    borderWidth: 1, borderRadius: RADIUS.md,
+    paddingVertical: 8, paddingHorizontal: 10,
+    backgroundColor: COLORS.brandBg, borderColor: COLORS.brandBorder,
   },
-  photoValidBadge: {
+  doneBtnText: { fontSize: 12, fontFamily: FONTS.medium, color: COLORS.brand },
+
+  validatedBadge: {
     flexDirection: 'row', alignItems: 'center', gap: 5,
     backgroundColor: COLORS.successBg, borderRadius: RADIUS.sm,
     paddingHorizontal: 8, paddingVertical: 4,
     borderWidth: 1, borderColor: COLORS.successBorder,
   },
-  photoValidText: { fontSize: 11, fontFamily: FONTS.semibold, color: COLORS.success },
+  validatedText: { fontSize: 11, fontFamily: FONTS.semibold, color: COLORS.success },
 });

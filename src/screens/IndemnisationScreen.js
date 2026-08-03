@@ -8,7 +8,9 @@ import { COLORS, FONTS, RADIUS, SPACING, SHADOW } from '../theme';
 import Icon from '../components/LucideIcon';
 import { useApp } from '../context/AppContext';
 
-const mais_malade = require('../assets/images/mais_malade.png');
+const mais_malade    = require('../assets/images/mais_malade.png');
+const inondation_img = require('../assets/images/inondation.png');
+const secheress_img  = require('../assets/images/secheress.png');
 
 const AMOUNTS = {
   secheresse: { display: '420 000', raw: 420000 },
@@ -29,30 +31,31 @@ const PAYMENT_OPTIONS = [
 ];
 
 const GUIDE_META = {
-  secheresse: { color: '#EA580C', bg: '#FFF7ED', border: '#FED7AA', icon: 'Sun',      label: 'Sécheresse' },
-  inondation:  { color: '#0284C7', bg: '#F0F9FF', border: '#BAE6FD', icon: 'Droplets', label: 'Inondation'  },
+  secheresse: { color: '#B45309', bg: '#FEF8EB', border: '#F5D49A', icon: 'Sun',      label: 'Sécheresse' },
+  inondation:  { color: '#0369A1', bg: '#EFF7FF', border: '#BAD8F0', icon: 'Droplets', label: 'Inondation'  },
 };
 
 const STEP_LABELS = ['GPS', 'Photo', 'Contrat & Paiement'];
 
 export default function IndemnisationScreen({ route, navigation }) {
-  const { type } = route.params;
+  const { type, skipToPayment } = route.params;
   const { user } = useApp();
 
+  const photoSrc = type === 'inondation' ? inondation_img : secheress_img;
   const guide  = GUIDE_META[type] || GUIDE_META.secheresse;
   const amount = AMOUNTS[type]    || AMOUNTS.secheresse;
 
-  const [step, setStep]                       = useState(0);
+  const [step, setStep]                       = useState(skipToPayment ? 2 : 0);
   const [gpsLoading, setGpsLoading]           = useState(false);
   const [photoLoading, setPhotoLoading]       = useState(false);
   const [photoOk, setPhotoOk]                 = useState(false);
-  const [contractOk, setContractOk]           = useState(false);
+  const [contractOk, setContractOk]           = useState(skipToPayment ? true : false);
   const [selectedPayment, setSelectedPayment] = useState(null);
   const [paymentNumber, setPaymentNumber]     = useState('');
   const [paymentSent, setPaymentSent]         = useState(false);
   const [paying, setPaying]                   = useState(false);
 
-  const progressAnim = useRef(new Animated.Value(0)).current;
+  const progressAnim = useRef(new Animated.Value(skipToPayment ? 1 : 0)).current;
 
   // Dès qu'on atteint l'étape 2, démarrer la validation du contrat
   useEffect(() => {
@@ -215,13 +218,13 @@ export default function IndemnisationScreen({ route, navigation }) {
                   <Text style={styles.doneTitleTxt}>Photo du sinistre enregistrée</Text>
                   <Text style={styles.doneSubTxt}>Analysée et validée par Agro AI</Text>
                 </View>
-                <Image source={mais_malade} style={styles.photoMini} resizeMode="cover" />
+                <Image source={photoSrc} style={styles.photoMini} resizeMode="cover" />
               </View>
             ) : (
               <>
                 <View style={styles.cardHeader}>
-                  <View style={[styles.stepIconWrap, { backgroundColor: '#FFF7ED' }]}>
-                    <Icon name="ImagePlus" size={18} color="#EA580C" strokeWidth={2} />
+                  <View style={[styles.stepIconWrap, { backgroundColor: guide.bg }]}>
+                    <Icon name="ImagePlus" size={18} color={guide.color} strokeWidth={2} />
                   </View>
                   <View style={{ flex: 1 }}>
                     <Text style={styles.cardTitle}>Photographiez le sinistre</Text>
@@ -230,7 +233,7 @@ export default function IndemnisationScreen({ route, navigation }) {
                 </View>
                 {photoOk ? (
                   <View style={styles.photoPreview}>
-                    <Image source={mais_malade} style={styles.photoFull} resizeMode="cover" />
+                    <Image source={photoSrc} style={styles.photoFull} resizeMode="cover" />
                     <View style={styles.photoTag}>
                       <Icon name="CheckCircle2" size={13} color={COLORS.success} strokeWidth={2.5} />
                       <Text style={styles.photoTagTxt}>Agro AI a analysé et validé la photo</Text>
@@ -242,7 +245,7 @@ export default function IndemnisationScreen({ route, navigation }) {
                       Photographiez clairement les plants endommagés. L'IA analysera l'image pour évaluer la sévérité du sinistre.
                     </Text>
                     <TouchableOpacity
-                      style={[styles.actionBtn, { backgroundColor: '#EA580C' }, photoLoading && styles.actionBtnLoading]}
+                      style={[styles.actionBtn, { backgroundColor: guide.color }, photoLoading && styles.actionBtnLoading]}
                       onPress={takePhoto}
                       disabled={photoLoading}
                       activeOpacity={0.85}
@@ -267,8 +270,8 @@ export default function IndemnisationScreen({ route, navigation }) {
             {!contractOk && (
               <>
                 <View style={styles.cardHeader}>
-                  <View style={[styles.stepIconWrap, { backgroundColor: COLORS.purpleBg }]}>
-                    <Icon name="Zap" size={18} color={COLORS.purple} strokeWidth={2} />
+                  <View style={[styles.stepIconWrap, { backgroundColor: COLORS.brandLightBg }]}>
+                    <Icon name="Zap" size={18} color={COLORS.brandLight} strokeWidth={2} />
                   </View>
                   <View style={{ flex: 1 }}>
                     <Text style={styles.cardTitle}>Validation blockchain</Text>
@@ -305,7 +308,7 @@ export default function IndemnisationScreen({ route, navigation }) {
                 {/* Badge validation réussie */}
                 <View style={styles.contractSuccess}>
                   <View style={styles.contractSuccessIcon}>
-                    <Icon name="Zap" size={20} color={COLORS.purple} strokeWidth={2} />
+                    <Icon name="Zap" size={20} color={COLORS.brandLight} strokeWidth={2} />
                   </View>
                   <View style={{ flex: 1 }}>
                     <Text style={styles.contractSuccessTitle}>Smart contract validé</Text>
@@ -531,22 +534,22 @@ const styles = StyleSheet.create({
   },
   hashValue: { fontSize: 11, fontFamily: FONTS.regular, color: '#94A3B8', letterSpacing: 0.2 },
   progressBar: { height: 6, backgroundColor: COLORS.bgTertiary, borderRadius: 3, overflow: 'hidden' },
-  progressFill: { height: 6, backgroundColor: COLORS.purple, borderRadius: 3 },
+  progressFill: { height: 6, backgroundColor: COLORS.brandLight, borderRadius: 3 },
   verifyList: { gap: 6 },
   verifyItem: { flexDirection: 'row', alignItems: 'center', gap: 7 },
   verifyTxt: { fontSize: 12, fontFamily: FONTS.regular, color: COLORS.textSecondary },
 
   contractSuccess: {
     flexDirection: 'row', alignItems: 'center', gap: 10,
-    backgroundColor: COLORS.purpleBg, borderRadius: RADIUS.md,
-    padding: SPACING.sm, borderWidth: 1, borderColor: COLORS.purpleBorder,
+    backgroundColor: COLORS.brandLightBg, borderRadius: RADIUS.md,
+    padding: SPACING.sm, borderWidth: 1, borderColor: COLORS.brandLightBorder,
   },
   contractSuccessIcon: {
     width: 36, height: 36, borderRadius: RADIUS.md,
-    backgroundColor: COLORS.purpleBorder,
+    backgroundColor: COLORS.brandLightBorder,
     alignItems: 'center', justifyContent: 'center',
   },
-  contractSuccessTitle: { fontSize: 13, fontFamily: FONTS.bold, color: COLORS.purple },
+  contractSuccessTitle: { fontSize: 13, fontFamily: FONTS.bold, color: COLORS.brandLight },
   contractSuccessSub:   { fontSize: 11, fontFamily: FONTS.regular, color: COLORS.textMuted },
   contractBadge: {
     width: 24, height: 24, borderRadius: 12, backgroundColor: COLORS.success,

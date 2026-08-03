@@ -1,44 +1,60 @@
 export const COLORS = {
-  bgPrimary: '#FFFFFF',
-  bgSecondary: '#FAFAF9',
-  bgTertiary: '#F4F4F2',
+  // Backgrounds — légère teinte verte pour la cohésion avec le logo
+  bgPrimary:   '#FFFFFF',
+  bgSecondary: '#F7FAF7',
+  bgTertiary:  '#EFF5F0',
 
-  border: '#E8E8E5',
-  borderStrong: '#D1D1CE',
+  // Bordures — teintées vert
+  border:       '#DDE8E1',
+  borderStrong: '#C2D5C9',
 
-  text: '#18181A',
-  textSecondary: '#52525C',
-  textMuted: '#A0A0AB',
+  // Texte — noir chaud avec légère teinte verte
+  text:          '#0F1A12',
+  textSecondary: '#445A4C',
+  textMuted:     '#8A9E92',
 
-  brand: '#16613A',
-  brandMedium: '#1E8048',
-  brandBg: '#F0F8F4',
-  brandBorder: '#C2E5D0',
+  // Marque — couleurs exactes du logo AgroRisk
+  brand:            '#1A5C2A',   // vert forêt foncé (logo "Agro")
+  brandMedium:      '#2C7D3E',
+  brandLight:       '#5CB83C',   // vert lime vif (logo "Risk") — aussi: smart contract / blockchain
+  brandBg:          '#EFF8F1',
+  brandBorder:      '#BDD9C7',
+  brandLightBg:     '#F1FAE8',
+  brandLightBorder: '#C8E9A8',
 
-  success: '#16A34A',
-  successBg: '#F0FDF4',
-  successBorder: '#BBF7D0',
+  // Succès = même famille que la marque (une teinte de moins)
+  success:       '#1A5C2A',
+  successBg:     '#EFF8F1',
+  successBorder: '#BDD9C7',
 
-  warning: '#D97706',
-  warningBg: '#FFFBEB',
-  warningBorder: '#FDE68A',
+  // Warning — amber terreux (sécheresse / chaleur)
+  warning:       '#B45309',
+  warningBg:     '#FEF8EB',
+  warningBorder: '#F5D49A',
 
-  danger: '#DC2626',
-  dangerBg: '#FEF2F2',
-  dangerBorder: '#FECACA',
+  // Danger — rouge profond (risque élevé, alertes critiques)
+  danger:       '#B91C1C',
+  dangerBg:     '#FEF2F2',
+  dangerBorder: '#FBCFCC',
 
-  purple: '#7C3AED',
-  purpleBg: '#F5F3FF',
-  purpleBorder: '#DDD6FE',
+  // Info — bleu ciel (inondation uniquement — eau = bleu, trop intuitif)
+  info:       '#0369A1',
+  infoBg:     '#EFF7FF',
+  infoBorder: '#BAD8F0',
 
-  primary: '#16613A',
+  // Critique — cramoisi profond (remplace le violet, beaucoup plus agricole/naturel)
+  critical:       '#7F1D1D',
+  criticalBg:     '#FFF0F0',
+  criticalBorder: '#F9C4C4',
+
+  primary: '#1A5C2A',
 };
 
 export const RISK_LEVELS = {
-  faible:   { color: '#16A34A', bg: '#F0FDF4', border: '#BBF7D0', label: 'Faible'   },
-  modere:   { color: '#D97706', bg: '#FFFBEB', border: '#FDE68A', label: 'Modéré'   },
-  eleve:    { color: '#DC2626', bg: '#FEF2F2', border: '#FECACA', label: 'Élevé'    },
-  critique: { color: '#7C3AED', bg: '#F5F3FF', border: '#DDD6FE', label: 'Critique' },
+  faible:   { color: '#1A5C2A', bg: '#EFF8F1', border: '#BDD9C7', label: 'Faible'   },
+  modere:   { color: '#B45309', bg: '#FEF8EB', border: '#F5D49A', label: 'Modéré'   },
+  eleve:    { color: '#B91C1C', bg: '#FEF2F2', border: '#FBCFCC', label: 'Élevé'    },
+  critique: { color: '#7F1D1D', bg: '#FFF0F0', border: '#F9C4C4', label: 'Critique' },
 };
 
 export const RISK_ICONS = {

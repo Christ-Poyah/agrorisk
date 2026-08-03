@@ -5,6 +5,7 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 
 import SplashScreen            from '../screens/SplashScreen';
+import OnboardingScreen        from '../screens/OnboardingScreen';
 import AuthScreen              from '../screens/AuthScreen';
 import OTPScreen               from '../screens/OTPScreen';
 import PlantationSummaryScreen from '../screens/PlantationSummaryScreen';
@@ -14,6 +15,7 @@ import IndemnisationScreen    from '../screens/IndemnisationScreen';
 import OffresAssuranceScreen  from '../screens/OffresAssuranceScreen';
 import ChatbotScreen           from '../screens/ChatbotScreen';
 import PlantationDetailScreen  from '../screens/PlantationDetailScreen';
+import AIAnalysisScreen        from '../screens/AIAnalysisScreen';
 import PlantationsScreen       from '../screens/PlantationsScreen';
 import AlertsScreen            from '../screens/AlertsScreen';
 import ProfileScreen           from '../screens/ProfileScreen';
@@ -39,6 +41,7 @@ function HomeNavigator() {
       <HomeStack.Screen name="Plantations"       component={PlantationsScreen} />
       <HomeStack.Screen name="Alerts"            component={AlertsScreen} />
       <HomeStack.Screen name="Profile"           component={ProfileScreen} />
+      <HomeStack.Screen name="AIAnalysis"        component={AIAnalysisScreen} />
     </HomeStack.Navigator>
   );
 }
@@ -95,6 +98,7 @@ export default function AppNavigator() {
     <NavigationContainer>
       <RootStack.Navigator screenOptions={{ headerShown: false }}>
         <RootStack.Screen name="Splash"            component={SplashScreen} />
+        <RootStack.Screen name="Onboarding"        component={OnboardingScreen} options={{ animation: 'fade' }} />
         <RootStack.Screen name="Auth"              component={AuthScreen} />
         <RootStack.Screen name="OTP"               component={OTPScreen} />
         <RootStack.Screen name="AddPlantation"     component={AddPlantationScreen} />

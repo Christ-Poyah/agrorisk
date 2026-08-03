@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import {
-  View, Text, StyleSheet, TextInput, TouchableOpacity,
-  ScrollView, KeyboardAvoidingView, Platform, Image,
+  View, Text, StyleSheet, TouchableOpacity,
+  ScrollView, KeyboardAvoidingView, Platform, Image, TextInput,
 } from 'react-native';
 
 const logo = require('../assets/images/logo.jpeg');
@@ -64,7 +64,6 @@ export default function AuthScreen({ navigation }) {
                     value={name}
                     onChangeText={setName}
                     placeholderTextColor={COLORS.textMuted}
-                    underlineColorAndroid="transparent"
                   />
                 </View>
               </View>
@@ -82,7 +81,6 @@ export default function AuthScreen({ navigation }) {
                   value={phone}
                   onChangeText={setPhone}
                   placeholderTextColor={COLORS.textMuted}
-                  underlineColorAndroid="transparent"
                 />
               </View>
             </View>

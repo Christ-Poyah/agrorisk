@@ -198,9 +198,9 @@ export default function PlantationDetailScreen({ route, navigation }) {
         {tab === 'assurance' && (
           plantation.insurance.active ? (
             <>
-              <View style={[styles.card, SHADOW.sm, { borderTopWidth: 3, borderTopColor: COLORS.purple }]}>
+              <View style={[styles.card, SHADOW.sm, { borderTopWidth: 3, borderTopColor: COLORS.brandLight }]}>
                 <View style={styles.insuranceTop}>
-                  <Icon name="ShieldCheck" size={22} color={COLORS.purple} strokeWidth={1.75} />
+                  <Icon name="ShieldCheck" size={22} color={COLORS.brandLight} strokeWidth={1.75} />
                   <View>
                     <Text style={styles.insTitle}>Assurance active</Text>
                     <Text style={styles.insSub}>Smart Contract on-chain</Text>
@@ -218,8 +218,8 @@ export default function PlantationDetailScreen({ route, navigation }) {
                     <Text style={styles.insStatLabel}>FCFA prime/an</Text>
                   </View>
                 </View>
-                <View style={[styles.hashBox, { backgroundColor: COLORS.purpleBg, borderColor: COLORS.purpleBorder }]}>
-                  <Icon name="Zap" size={12} color={COLORS.purple} />
+                <View style={[styles.hashBox, { backgroundColor: COLORS.brandLightBg, borderColor: COLORS.brandLightBorder }]}>
+                  <Icon name="Zap" size={12} color={COLORS.brandLight} />
                   <Text style={styles.hashText}>{plantation.insurance.smartContract}</Text>
                 </View>
               </View>
@@ -347,13 +347,13 @@ const styles = StyleSheet.create({
   insStats: { flexDirection: 'row', marginBottom: SPACING.sm },
   insStat: { flex: 1, alignItems: 'center', gap: 3 },
   insStatDivider: { width: 1, backgroundColor: COLORS.border },
-  insStatVal: { fontSize: 18, fontFamily: FONTS.bold, color: COLORS.purple },
+  insStatVal: { fontSize: 18, fontFamily: FONTS.bold, color: COLORS.brandLight },
   insStatLabel: { fontSize: 11, fontFamily: FONTS.regular, color: COLORS.textMuted },
   hashBox: {
     flexDirection: 'row', alignItems: 'center', gap: 6,
     padding: SPACING.sm, borderRadius: RADIUS.sm, borderWidth: 1, marginTop: SPACING.xs,
   },
-  hashText: { fontSize: 12, fontFamily: FONTS.regular, color: COLORS.purple },
+  hashText: { fontSize: 12, fontFamily: FONTS.regular, color: COLORS.brandLight },
   trigTitle: { fontSize: 13, fontFamily: FONTS.semibold, color: COLORS.success, marginBottom: 4 },
   trigAmount: { fontSize: 22, fontFamily: FONTS.bold, color: COLORS.text, marginBottom: 4 },
   trigDesc: { fontSize: 12, fontFamily: FONTS.regular, color: COLORS.textSecondary },
@@ -362,7 +362,7 @@ const styles = StyleSheet.create({
   noInsDesc: { fontSize: 13, fontFamily: FONTS.regular, color: COLORS.textMuted, textAlign: 'center', lineHeight: 18, paddingHorizontal: 16 },
   subscribeBtn: {
     flexDirection: 'row', alignItems: 'center', gap: 6,
-    backgroundColor: COLORS.purple, borderRadius: RADIUS.md,
+    backgroundColor: COLORS.brand, borderRadius: RADIUS.md,
     paddingVertical: 12, paddingHorizontal: 20, marginTop: 4,
   },
   subscribeBtnText: { fontSize: 14, fontFamily: FONTS.semibold, color: '#FFF' },

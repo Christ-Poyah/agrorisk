@@ -1,8 +1,8 @@
 import React, { useState, useRef, useEffect } from 'react';
 import {
-  View, Text, StyleSheet, ScrollView, TextInput,
+  View, Text, StyleSheet, ScrollView,
   TouchableOpacity, KeyboardAvoidingView, Platform, Animated,
-  Pressable, Image,
+  Pressable, Image, TextInput,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { COLORS, FONTS, RADIUS, SPACING } from '../theme';

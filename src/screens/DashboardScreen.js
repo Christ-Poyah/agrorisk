@@ -109,7 +109,7 @@ export default function DashboardScreen({ navigation }) {
           <View style={[styles.contractBanner, SHADOW.sm]}>
             <View style={styles.contractLeft}>
               <View style={styles.contractIcon}>
-                <Icon name="Zap" size={16} color={COLORS.purple} strokeWidth={2} />
+                <Icon name="Zap" size={16} color={COLORS.brandLight} strokeWidth={2} />
               </View>
               <View>
                 <Text style={styles.contractTitle}>Indemnisation déclenchée</Text>
@@ -223,17 +223,17 @@ const styles = StyleSheet.create({
     flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center',
     backgroundColor: COLORS.bgPrimary, margin: SPACING.md,
     borderRadius: RADIUS.md, padding: SPACING.md,
-    borderWidth: 1, borderColor: COLORS.purpleBorder,
-    borderLeftWidth: 3, borderLeftColor: COLORS.purple,
+    borderWidth: 1, borderColor: COLORS.brandLightBorder,
+    borderLeftWidth: 3, borderLeftColor: COLORS.brandLight,
   },
   contractLeft: { flexDirection: 'row', alignItems: 'center', gap: 10 },
   contractIcon: {
     width: 36, height: 36, borderRadius: RADIUS.md,
-    backgroundColor: COLORS.purpleBg, alignItems: 'center', justifyContent: 'center',
+    backgroundColor: COLORS.brandLightBg, alignItems: 'center', justifyContent: 'center',
   },
   contractTitle: { fontSize: 13, fontFamily: FONTS.semibold, color: COLORS.text },
   contractSub: { fontSize: 11, fontFamily: FONTS.regular, color: COLORS.textMuted },
-  contractAmount: { fontSize: 15, fontFamily: FONTS.bold, color: COLORS.purple },
+  contractAmount: { fontSize: 15, fontFamily: FONTS.bold, color: COLORS.brandLight },
   section: { padding: SPACING.md },
   sectionHead: {
     flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center',
